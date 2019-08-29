@@ -1,0 +1,12 @@
+<div class="case-study-block-student-view">
+    {% for child_block in child_blocks %}
+    <div class="case-study-block-child-student-view">
+        <div class="case-study-block-child-display-name">
+            {{ child_block.display_name }}
+        </div>
+        <div class="case-study-block-child-content">
+            {{ child_block.content|safe }}
+        </div>
+    </div>
+    {% endfor %}
+</div>

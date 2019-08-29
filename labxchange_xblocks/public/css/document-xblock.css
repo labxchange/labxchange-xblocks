@@ -1,0 +1,9 @@
+.document-block-student-view {
+  height: 500px;
+  max-height: 100vh;
+}
+
+.document-block-student-view object {
+  height: 100%;
+  width: 100%;
+}

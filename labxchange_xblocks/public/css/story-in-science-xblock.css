@@ -1,0 +1,18 @@
+.story-in-science-block-student-view {
+  p {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+}
+
+.story-in-science-block-key-points {
+  margin-bottom: 0.5em;
+  ul {
+    list-style-type: square;
+  }
+}
+
+.story-in-science-block-story {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}

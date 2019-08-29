@@ -12,6 +12,22 @@ import sys
 from setuptools import setup
 
 
+def package_data(pkg, roots):
+    """Generic function to find package_data.
+
+    All of the files under each of the `roots` will be declared as package
+    data for package `pkg`.
+
+    """
+    data = []
+    for root in roots:
+        for dirname, _, files in os.walk(os.path.join(pkg, root)):
+            for fname in files:
+                data.append(os.path.relpath(os.path.join(dirname, fname), pkg))
+
+    return {pkg: data}
+
+
 def get_version(*file_paths):
     """
     Extract the version string from the file at the given relative path fragments.
@@ -69,10 +85,11 @@ setup(
     long_description=README + '\n\n' + CHANGELOG,
     author='OpenCraft',
     author_email='help@opencraft.com',
-    url='https://github.com/edx/labxchange-xblocks',
+    url='https://github.com/open-craft/labxchange-xblocks',
     packages=[
         'labxchange_xblocks',
     ],
+    package_data=package_data('labxchange_xblocks', ['static', 'public']),
     include_package_data=True,
     install_requires=load_requirements('requirements/base.in'),
     license="AGPL 3.0",
@@ -85,4 +102,14 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
     ],
+    entry_points={
+        'xblock.v1': [
+            'assignment = labxchange_xblocks.assignment_block:AssignmentBlock',
+            'case_study = labxchange_xblocks.case_study_block:CaseStudyBlock',
+            'document = labxchange_xblocks.document_block:DocumentBlock',
+            'image2 = labxchange_xblocks.image_block:ImageBlock',
+            'simulation = labxchange_xblocks.simulation_block:SimulationBlock',
+            'story_in_science = labxchange_xblocks.story_in_science_block:StoryInScienceBlock',
+        ]
+    },
 )
