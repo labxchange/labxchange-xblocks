@@ -1,8 +1,7 @@
 labxchange-xblocks
 =============================
 
-|pypi-badge| |travis-badge| |codecov-badge| |doc-badge| |pyversions-badge|
-|license-badge|
+|travis-badge| |codecov-badge|
 
 This repository contains XBlocks developed for the LabXchange project.
 
@@ -54,26 +53,10 @@ refer to this `list of resources`_ if you need any assistance.
 .. _list of resources: https://open.edx.org/getting-help
 
 
-.. |pypi-badge| image:: https://img.shields.io/pypi/v/labxchange-xblocks.svg
-    :target: https://pypi.python.org/pypi/labxchange-xblocks/
-    :alt: PyPI
-
-.. |travis-badge| image:: https://travis-ci.org/edx/labxchange-xblocks.svg?branch=master
-    :target: https://travis-ci.org/edx/labxchange-xblocks
+.. |travis-badge| image:: https://travis-ci.org/open-craft/labxchange-xblocks.svg?branch=master
+    :target: https://travis-ci.org/open-craft/labxchange-xblocks
     :alt: Travis
 
-.. |codecov-badge| image:: http://codecov.io/github/edx/labxchange-xblocks/coverage.svg?branch=master
-    :target: http://codecov.io/github/edx/labxchange-xblocks?branch=master
+.. |codecov-badge| image:: http://codecov.io/github/open-craft/labxchange-xblocks/coverage.svg?branch=master
+    :target: http://codecov.io/github/open-craft/labxchange-xblocks?branch=master
     :alt: Codecov
-
-.. |doc-badge| image:: https://readthedocs.org/projects/labxchange-xblocks/badge/?version=latest
-    :target: http://labxchange-xblocks.readthedocs.io/en/latest/
-    :alt: Documentation
-
-.. |pyversions-badge| image:: https://img.shields.io/pypi/pyversions/labxchange-xblocks.svg
-    :target: https://pypi.python.org/pypi/labxchange-xblocks/
-    :alt: Supported Python versions
-
-.. |license-badge| image:: https://img.shields.io/github/license/edx/labxchange-xblocks.svg
-    :target: https://github.com/edx/labxchange-xblocks/blob/master/LICENSE.txt
-    :alt: License
