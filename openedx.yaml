@@ -1,0 +1,9 @@
+# openedx.yaml
+
+---
+owner: open-craft
+nick: labxchange-xblocks
+tags:
+    - tools
+oeps:
+    oep-2: True
