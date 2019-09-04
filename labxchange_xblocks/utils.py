@@ -56,14 +56,18 @@ class StudentViewBlockMixin(XBlockMixin):
         render_context = self.student_view_data()
 
         if self.has_children:
-            for child_block_data in render_context['child_blocks']:
-                child_block_id = child_block_data['block_id']
-                child_block = self.runtime.get_block(child_block_id)
+            child_blocks_data = []
+            for child_usage_id in self.children:
+                child_block = self.runtime.get_block(child_usage_id)
                 if child_block:
                     child_block_fragment = child_block.render('student_view', context)
                     child_block_content = child_block_fragment.content
                     fragment.add_fragment_resources(child_block_fragment)
-                    child_block_data['content'] = child_block_content
+                    child_blocks_data.append({
+                        'content': child_block_content,
+                        'display_name': child_block.display_name,
+                    })
+            render_context['child_blocks'] = child_blocks_data
 
         fragment.add_content(loader.render_template(self.student_view_template, render_context))
 

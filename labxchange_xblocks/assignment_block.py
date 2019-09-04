@@ -5,6 +5,10 @@ Assignment XBlock.
 
 from __future__ import absolute_import, division, unicode_literals
 
+import json
+
+from six import text_type
+from webob import Response
 from xblock.core import XBlock
 from xblock.fields import Scope, String
 from xblockutils.studio_editable import (
@@ -42,39 +46,59 @@ class AssignmentBlock(
     allowed_nested_blocks = xblock_specs_from_categories(('problem', 'drag-and-drop-v2'))
 
     student_view_template = 'templates/assignment_student_view.html'
-    css_resource_url = 'public/css/assignment-xblock.css'
 
     def student_view_data(self, context=None):
         """
         Return content and settings for student view.
         """
         child_blocks_data = []
-        total_earned = 0
-        total_possible = 0
-
-        for child_block_id in self.children:  # pylint: disable=no-member
-            child_block = self.runtime.get_block(child_block_id)
+        for child_usage_id in self.children:  # pylint: disable=no-member
+            child_block = self.runtime.get_block(child_usage_id)
             if child_block:
                 child_block_data = {
-                    'block_id': child_block_id,
+                    'usage_id': text_type(child_usage_id),
+                    'block_type': child_block.scope_ids.block_type,
                     'display_name': child_block.display_name,
                     'graded': child_block.graded,
-                    'score': self.get_weighted_score_for_block(child_block),
-                    'type': child_block.category,
                 }
                 child_blocks_data.append(child_block_data)
-                if child_block_data['score']:
-                    total_earned += child_block_data['score']['earned']
-                    total_possible += child_block_data['score']['possible']
 
         return {
             'display_name': self.display_name,
+            'child_blocks': child_blocks_data,
+        }
+
+    @XBlock.handler
+    def student_view_user_state(self, request, suffix=''):  # pylint: disable=unused-argument
+        """
+        Return JSON representation of student state.
+        """
+        child_blocks_state = {}
+        total_earned = 0
+        total_possible = 0
+
+        for child_usage_id in self.children:  # pylint: disable=no-member
+            child_block = self.runtime.get_block(child_usage_id)
+            if child_block:
+                score = self.get_weighted_score_for_block(child_block)
+                child_blocks_state[text_type(child_usage_id)] = {'score': score}
+                if score:
+                    total_earned += score['earned']
+                    total_possible += score['possible']
+
+        state = {
             'score': {
                 'earned': total_earned,
                 'possible': total_possible,
             },
-            'child_blocks': child_blocks_data,
+            'child_blocks': child_blocks_state,
         }
+
+        return Response(
+            json.dumps(state),
+            content_type='application/json',
+            charset='UTF-8'
+        )
 
     def get_weighted_score_for_block(self, block):
         """
@@ -84,7 +108,7 @@ class AssignmentBlock(
         """
         if getattr(block, 'has_score', False) is True:
             score = block.get_score()
-            if score:
+            if score is not None:
                 cannot_compute_with_weight = block.weight is None or score.raw_possible == 0
                 if cannot_compute_with_weight:
                     return {

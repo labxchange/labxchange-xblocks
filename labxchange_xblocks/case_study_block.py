@@ -5,6 +5,7 @@ Case Study XBlock.
 
 from __future__ import absolute_import, unicode_literals
 
+from six import text_type
 from xblock.core import XBlock
 from xblock.fields import Scope, String
 from xblockutils.studio_editable import (
@@ -42,7 +43,6 @@ class CaseStudyBlock(
     allowed_nested_blocks = xblock_specs_from_categories(('html', 'video', 'document'))
 
     student_view_template = 'templates/case_study_student_view.html'
-    css_resource_url = 'public/css/case-study-xblock.css'
 
     def student_view_data(self, context=None):
         """
@@ -50,13 +50,13 @@ class CaseStudyBlock(
         """
         child_blocks_data = []
 
-        for child_block_id in self.children:  # pylint: disable=no-member
-            child_block = self.runtime.get_block(child_block_id)
+        for child_usage_id in self.children:  # pylint: disable=no-member
+            child_block = self.runtime.get_block(child_usage_id)
             if child_block:
                 child_block_data = {
-                    'block_id': child_block_id,
+                    'usage_id': text_type(child_usage_id),
+                    'block_type': child_block.scope_ids.block_type,
                     'display_name': child_block.display_name,
-                    'type': child_block.category,
                 }
                 child_blocks_data.append(child_block_data)
 

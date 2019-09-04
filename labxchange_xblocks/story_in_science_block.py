@@ -49,7 +49,6 @@ class StoryInScienceBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMix
     )
 
     student_view_template = 'templates/story_in_science_student_view.html'
-    css_resource_url = 'public/css/story-in-science-xblock.css'
 
     def student_view_data(self, context=None):
         """
