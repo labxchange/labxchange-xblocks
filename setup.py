@@ -104,12 +104,12 @@ setup(
     ],
     entry_points={
         'xblock.v1': [
-            'assignment = labxchange_xblocks.assignment_block:AssignmentBlock',
-            'case_study = labxchange_xblocks.case_study_block:CaseStudyBlock',
-            'document = labxchange_xblocks.document_block:DocumentBlock',
-            'image2 = labxchange_xblocks.image_block:ImageBlock',
-            'simulation = labxchange_xblocks.simulation_block:SimulationBlock',
-            'story_in_science = labxchange_xblocks.story_in_science_block:StoryInScienceBlock',
+            'lx_assignment = labxchange_xblocks.assignment_block:AssignmentBlock',
+            'lx_case_study = labxchange_xblocks.case_study_block:CaseStudyBlock',
+            'lx_document = labxchange_xblocks.document_block:DocumentBlock',
+            'lx_image = labxchange_xblocks.image_block:ImageBlock',
+            'lx_simulation = labxchange_xblocks.simulation_block:SimulationBlock',
+            'lx_story_in_science = labxchange_xblocks.story_in_science_block:StoryInScienceBlock',
         ]
     },
 )
