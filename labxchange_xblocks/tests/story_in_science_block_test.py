@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+import ddt
 from six import text_type
 
-import ddt
 from labxchange_xblocks.story_in_science_block import StoryInScienceBlock
 from utils import BlockTestCaseBase
 

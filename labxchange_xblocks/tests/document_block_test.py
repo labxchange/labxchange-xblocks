@@ -2,6 +2,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import ddt
+
 from labxchange_xblocks.document_block import DocumentBlock
 from utils import BlockTestCaseBase
 

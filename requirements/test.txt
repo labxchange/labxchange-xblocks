@@ -10,10 +10,12 @@
 
 appdirs==1.4.3
 coverage==4.5.4           # via pytest-cov
-fs==2.4.10
+ddt==1.2.1
+fs==2.4.11
 lxml==4.4.1
 mako==1.1.0
 markupsafe==1.1.1
+mock==3.0.5
 pytest-cov==2.7.1
 pytest-django==3.5.1
 pytest==4.6.5             # via pytest-cov, pytest-django

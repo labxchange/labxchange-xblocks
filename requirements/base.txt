@@ -9,8 +9,8 @@
 --trusted-host edx.devstack.devpi
 
 appdirs==1.4.3            # via fs
-django==1.11.23
-fs==2.4.10                # via xblock
+django==1.11.24
+fs==2.4.11                # via xblock
 lxml==4.4.1               # via xblock
 mako==1.1.0               # via xblock-utils
 markupsafe==1.1.1         # via mako, xblock

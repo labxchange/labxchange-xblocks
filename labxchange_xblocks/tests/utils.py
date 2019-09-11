@@ -4,11 +4,10 @@ import re
 from unittest import TestCase
 from xml.dom import minidom
 
+import mock
 from xblock.field_data import DictFieldData
 from xblock.fields import ScopeIds
 from xblock.runtime import Runtime
-
-import mock
 
 
 class BlockTestCaseBase(TestCase):
