@@ -34,6 +34,13 @@ class DocumentBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
         scope=Scope.content,
     )
 
+    document_name = String(
+        display_name=_('Document Name'),
+        help=_('The name of the document file.'),
+        default='',
+        scope=Scope.content,
+    )
+
     document_url = String(
         display_name=_('Document URL'),
         help=_('The url of the document file.'),
@@ -44,6 +51,7 @@ class DocumentBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
     editable_fields = (
         'display_name',
         'document_type',
+        'document_name',
         'document_url',
     )
 
@@ -57,5 +65,6 @@ class DocumentBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
         return {
             'display_name': self.display_name,
             'document_type': self.document_type,
+            'document_name': self.document_name,
             'document_url': self.document_url,
         }

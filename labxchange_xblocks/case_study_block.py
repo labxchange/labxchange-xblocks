@@ -6,6 +6,7 @@ Case Study XBlock.
 from __future__ import absolute_import, unicode_literals
 
 from six import text_type
+from xblock.completable import XBlockCompletionMode
 from xblock.core import XBlock
 from xblock.fields import Scope, String
 from xblockutils.studio_editable import (
@@ -38,6 +39,8 @@ class CaseStudyBlock(
     editable_fields = (
         'display_name',
     )
+
+    completion_mode = XBlockCompletionMode.AGGREGATOR
 
     has_children = True
     allowed_nested_blocks = xblock_specs_from_categories(('html', 'video', 'document'))

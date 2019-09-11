@@ -9,6 +9,7 @@ import json
 
 from six import text_type
 from webob import Response
+from xblock.completable import XBlockCompletionMode
 from xblock.core import XBlock
 from xblock.fields import Scope, String
 from xblockutils.studio_editable import (
@@ -42,6 +43,8 @@ class AssignmentBlock(
         'display_name',
     )
 
+    completion_mode = XBlockCompletionMode.AGGREGATOR
+
     has_children = True
     allowed_nested_blocks = xblock_specs_from_categories(('problem', 'drag-and-drop-v2'))
 
@@ -59,7 +62,7 @@ class AssignmentBlock(
                     'usage_id': text_type(child_usage_id),
                     'block_type': child_block.scope_ids.block_type,
                     'display_name': child_block.display_name,
-                    'graded': child_block.graded,
+                    'graded': getattr(child_block, 'graded', False)
                 }
                 child_blocks_data.append(child_block_data)
 
