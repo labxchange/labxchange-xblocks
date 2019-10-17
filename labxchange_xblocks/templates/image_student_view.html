@@ -1,3 +1,9 @@
 <div class="image-block-student-view">
     <img class="image-block-image" src="{{ image_url }}" alt="{{ alt_text }}"/>
+    {% if caption or citation %}
+    <p class="caption">
+        {% if caption %}<span class="caption">{{ caption }}</span>{% endif %}
+        {% if citation %}<span class="citation">{{ citation }}</span>{% endif %}
+    </p>
+    {% endif %}
 </div>

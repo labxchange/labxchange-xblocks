@@ -38,10 +38,26 @@ class ImageBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
         scope=Scope.content,
     )
 
+    caption = String(
+        display_name=_('Image Caption'),
+        help=_('The legend/caption displayed under the image. Optional.'),
+        default='',
+        scope=Scope.content,
+    )
+
+    citation = String(
+        display_name=_('Image Citation'),
+        help=_('Citation/credit explaining where the image is from. Optional.'),
+        default='',
+        scope=Scope.content,
+    )
+
     editable_fields = (
         'display_name',
         'alt_text',
         'image_url',
+        'caption',
+        'citation',
     )
 
     student_view_template = 'templates/image_student_view.html'
@@ -54,5 +70,7 @@ class ImageBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
         return {
             'display_name': self.display_name,
             'alt_text': self.alt_text,
-            'image_url': self.image_url,
+            'image_url': self.expand_static_url(self.image_url),
+            'caption': self.caption,
+            'citation': self.citation,
         }
