@@ -27,9 +27,9 @@ class ImageBlockTestCase(BlockTestCaseBase):
             },
             # And this HTML:
             (
-                '<div class="image-block-student-view">\n'
+                '<figure class="image-block-student-view">\n'
                 '<img alt="" class="image-block-image" src=""/>\n'
-                '</div>'
+                '</figure>'
             )
         ), (
             # When providing this field data:
@@ -50,14 +50,14 @@ class ImageBlockTestCase(BlockTestCaseBase):
             },
             # And this HTML:
             (
-                '<div class="image-block-student-view">\n'
+                '<figure class="image-block-student-view">\n'
                 '<img alt="Map of the moon - چاند کا نقشہ" class="image-block-image"\n'
                 ' src="https://cdn.org/moon.jpeg"/>\n'
-                '<p class="caption">\n'
+                '<figcaption>\n'
                 '<span class="caption">Fig. 1: Map of the moon - چاند کا نقشہ</span>\n'
-                '<span class="citation">Courtesy NASA Lunar Reconnaissance Orbiter science team</span>\n'
-                '</p>\n'
-                '</div>'
+                '<cite>Courtesy NASA Lunar Reconnaissance Orbiter science team</cite>\n'
+                '</figcaption>\n'
+                '</figure>'
             )
         )
     )

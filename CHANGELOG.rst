@@ -14,12 +14,14 @@ Change Log
 Unreleased
 ~~~~~~~~~~
 
-*
+
+[0.2.0] - 2019-10-21
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Added "caption" and "citation" fields to image XBlock
+
 
 [0.1.0] - 2019-08-28
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Added
-_____
 
 * First release on PyPI.

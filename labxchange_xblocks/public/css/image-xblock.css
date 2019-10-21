@@ -1,27 +1,24 @@
-.image-block-student-view {
-  max-height: 100vh;
-}
-
-.image-block-image {
+.image-block-student-view .image-block-image {
   display: block;
   margin: 0 auto;
   max-width: 100%;
-  max-height: 100%;
+  max-height: 100vh;
 }
 
-.image-block-student-view .caption {
+.image-block-student-view figcaption {
   text-align: center;
   max-width: 80%;
   margin: 1em auto;
 }
 
-.image-block-student-view .caption .citation {
+.image-block-student-view figcaption cite {
   color: #777;
 }
 
-.image-block-student-view .caption .caption + .citation::before {
+.image-block-student-view figcaption .caption + cite::before {
   content: '(';
 }
-.image-block-student-view .caption .caption + .citation::after {
+
+.image-block-student-view figcaption .caption + cite::after {
   content: ')';
 }
