@@ -86,3 +86,33 @@ class StudentViewBlockMixin(XBlockMixin):
             content_type='application/json',
             charset='UTF-8'
         )
+
+    def expand_static_url(self, url):
+        """
+        Expand a static URL ("Studio URL").
+
+        This is required to make URLs like '/static/image.png' work (note: that is the
+        only portable URL format for static files that works across export/import and reruns).
+        This method is unfortunately a bit hackish since XBlock does not provide a low-level API
+        for this.
+
+        Input: a string like "/static/image.png"
+        Output: an absolute URL as a string, e.g. "https://cdn.none/course/234/image.png"
+        """
+        html_str = u'"{}"'.format(url)  # The static replacers look for quoted URLs like this
+        if hasattr(self.runtime, 'replace_static_urls_in_html'):
+            # This runtime supports the newest API for replacing static URLs,
+            # where the static assets are specific to each XBlock:
+            url = self.runtime.replace_static_urls_in_html(self, html_str)[1:-1]
+        elif hasattr(self.runtime, 'replace_urls'):
+            # This is the LMS modulestore runtime, which has this API:
+            url = self.runtime.replace_urls(html_str)[1:-1]
+        elif hasattr(self.runtime, 'course_id'):
+            # edX Studio uses a different runtime for 'studio_view' than 'student_view',
+            # and the 'studio_view' runtime doesn't provide the replace_urls API.
+            try:
+                from static_replace import replace_static_urls
+                url = replace_static_urls(html_str, None, course_id=self.runtime.course_id)[1:-1]
+            except ImportError:
+                pass
+        return url
