@@ -108,6 +108,7 @@ setup(
             'lx_case_study = labxchange_xblocks.case_study_block:CaseStudyBlock',
             'lx_document = labxchange_xblocks.document_block:DocumentBlock',
             'lx_image = labxchange_xblocks.image_block:ImageBlock',
+            'lx_narrative = labxchange_xblocks.narrative_block:NarrativeBlock',
             'lx_simulation = labxchange_xblocks.simulation_block:SimulationBlock',
             'lx_story_in_science = labxchange_xblocks.story_in_science_block:StoryInScienceBlock',
         ]
