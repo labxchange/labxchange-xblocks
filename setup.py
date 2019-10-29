@@ -110,7 +110,6 @@ setup(
             'lx_image = labxchange_xblocks.image_block:ImageBlock',
             'lx_narrative = labxchange_xblocks.narrative_block:NarrativeBlock',
             'lx_simulation = labxchange_xblocks.simulation_block:SimulationBlock',
-            'lx_story_in_science = labxchange_xblocks.story_in_science_block:StoryInScienceBlock',
         ]
     },
 )
