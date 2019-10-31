@@ -1,0 +1,17 @@
+<div class="narrative-block-student-view">
+    {% if key_points %}
+    <div class="narrative-block-key-points">
+        <div class="narrative-block-key-points-heading">
+            Key Points
+        </div>
+        <div class="narrative-block-key-points-details">
+            {{ key_points|safe }}
+        </div>
+    </div>
+    {% endif %}
+    {% if narrative %}
+    <div class="narrative-block-narrative">
+        {{ narrative|safe }}
+    </div>
+    {% endif %}
+</div>

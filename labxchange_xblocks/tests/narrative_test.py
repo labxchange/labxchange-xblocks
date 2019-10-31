@@ -4,60 +4,66 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import ddt
 from six import text_type
 
-from labxchange_xblocks.story_in_science_block import StoryInScienceBlock
+from labxchange_xblocks.narrative_block import NarrativeBlock
 from utils import BlockTestCaseBase
 
 
 @ddt.ddt
-class StoryInScienceBlockTestCase(BlockTestCaseBase):
+class NarrativeBlockTestCase(BlockTestCaseBase):
 
-    block_type = 'lx_story_in_science'
-    block_class = StoryInScienceBlock
+    block_type = 'lx_narrative'
+    block_class = NarrativeBlock
 
     data = (
         (
             {},
             {
-                'display_name': text_type('Story in Science'),
+                'display_name': text_type('Narrative'),
                 'key_points': '',
-                'story': '',
+                'narrative': '',
             },
             (
-                '<div class="story-in-science-block-student-view">\n'
-                '<div class="story-in-science-block-key-points">\n'
-                '<div class="story-in-science-block-key-points-heading">\n'
-                'Key Points\n'
+                '<div class="narrative-block-student-view">\n'
                 '</div>\n'
-                '<div class="story-in-science-block-key-points-details">\n'
-                '</div>\n'
-                '</div>\n'
-                '<div class="story-in-science-block-story">\n'
-                '</div>\n'
+            ),
+        ), (
+            {
+                'display_name': text_type('Stars - ستارے'),
+                'key_points': '',
+                'narrative': '',
+            },
+            {
+                'display_name': text_type('Stars - ستارے'),
+                'key_points': '',
+                'narrative': '',
+            },
+            (
+                '<div class="narrative-block-student-view">\n'
                 '</div>\n'
             ),
         ), (
             {
                 'display_name': text_type('Stars - ستارے'),
                 'key_points': '<ul><li>Point one.</li></ul>',
-                'story': '<p>This is a story about stars.</p>',
+                'narrative': '<p>This is a narrative about stars.</p>',
             },
             {
                 'display_name': text_type('Stars - ستارے'),
                 'key_points': '<ul><li>Point one.</li></ul>',
-                'story': '<p>This is a story about stars.</p>',
+                'narrative': '<p>This is a narrative about stars.</p>',
             },
             (
-                '<div class="story-in-science-block-student-view">\n'
-                '<div class="story-in-science-block-key-points">\n'
-                '<div class="story-in-science-block-key-points-heading">\n'
+                '<div class="narrative-block-student-view">\n'
+                '<div class="narrative-block-key-points">\n'
+                '<div class="narrative-block-key-points-heading">\n'
                 'Key Points\n'
                 '</div>\n'
-                '<div class="story-in-science-block-key-points-details">\n'
+                '<div class="narrative-block-key-points-details">\n'
                 '<ul><li>Point one.</li></ul>\n'
                 '</div>\n'
                 '</div>\n'
-                '<div class="story-in-science-block-story">\n'
-                '<p>This is a story about stars.</p>\n'
+                '<div class="narrative-block-narrative">\n'
+                '<p>This is a narrative about stars.</p>\n'
                 '</div>\n'
                 '</div>\n'
             ),

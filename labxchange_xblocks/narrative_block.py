@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Story In Science XBlock.
+Narrative XBlock.
 """
 
 from __future__ import absolute_import, unicode_literals
@@ -12,13 +12,13 @@ from xblockutils.studio_editable import StudioEditableXBlockMixin
 from .utils import StudentViewBlockMixin, _
 
 
-class StoryInScienceBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
+class NarrativeBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
     """
-    XBlock for https://storiesinscience.org/.
+    XBlock for narratives.
     """
 
     display_name = String(
-        default='Story in Science',
+        default='Narrative',
         display_name=_('Display Name'),
         help=_('The display name for this component.'),
         scope=Scope.content,
@@ -27,16 +27,16 @@ class StoryInScienceBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMix
     key_points = String(
         default='',
         display_name=_('Key Points'),
-        help=_('The key points of this story.'),
+        help=_('The key points of this narrative.'),
         multiline_editor='html',
         resettable_editor=False,
         scope=Scope.content,
     )
 
-    story = String(
+    narrative = String(
         default='',
-        display_name=_('Story'),
-        help=_('The complete story.'),
+        display_name=_('Narrative'),
+        help=_('The complete narrative.'),
         multiline_editor='html',
         resettable_editor=False,
         scope=Scope.content,
@@ -45,10 +45,10 @@ class StoryInScienceBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMix
     editable_fields = (
         'display_name',
         'key_points',
-        'story',
+        'narrative',
     )
 
-    student_view_template = 'templates/story_in_science_student_view.html'
+    student_view_template = 'templates/narrative_student_view.html'
 
     def student_view_data(self, context=None):
         """
@@ -57,5 +57,5 @@ class StoryInScienceBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMix
         return {
             'display_name': self.display_name,
             'key_points': self.key_points,
-            'story': self.story,
+            'narrative': self.narrative,
         }
