@@ -76,6 +76,8 @@ class StudentViewBlockMixin(XBlockMixin):
 
         return fragment
 
+    public_view = student_view
+
     @XBlock.handler
     def v1_student_view_data(self, request, suffix=None):  # pylint: disable=unused-argument
         """
