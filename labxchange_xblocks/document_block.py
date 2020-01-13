@@ -66,5 +66,5 @@ class DocumentBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
             'display_name': self.display_name,
             'document_type': self.document_type,
             'document_name': self.document_name,
-            'document_url': self.document_url,
+            'document_url': self.expand_static_url(self.document_url),
         }
