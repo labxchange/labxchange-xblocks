@@ -76,6 +76,8 @@ class StudentViewBlockMixin(XBlockMixin):
 
         return fragment
 
+    public_view = student_view
+
     @XBlock.handler
     def v1_student_view_data(self, request, suffix=None):  # pylint: disable=unused-argument
         """
@@ -100,10 +102,10 @@ class StudentViewBlockMixin(XBlockMixin):
         Output: an absolute URL as a string, e.g. "https://cdn.none/course/234/image.png"
         """
         html_str = u'"{}"'.format(url)  # The static replacers look for quoted URLs like this
-        if hasattr(self.runtime, 'replace_static_urls_in_html'):
+        if hasattr(self.runtime, 'transform_static_paths_to_urls'):
             # This runtime supports the newest API for replacing static URLs,
             # where the static assets are specific to each XBlock:
-            url = self.runtime.replace_static_urls_in_html(self, html_str)[1:-1]
+            url = self.runtime.transform_static_paths_to_urls(self, html_str)[1:-1]
         elif hasattr(self.runtime, 'replace_urls'):
             # This is the LMS modulestore runtime, which has this API:
             url = self.runtime.replace_urls(html_str)[1:-1]
