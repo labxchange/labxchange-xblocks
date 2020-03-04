@@ -2,12 +2,8 @@
 """
 Assignment XBlock.
 """
-
-from __future__ import absolute_import, division, unicode_literals
-
 import json
 
-from six import text_type
 from webob import Response
 from xblock.completable import XBlockCompletionMode
 from xblock.core import XBlock
@@ -58,11 +54,16 @@ class AssignmentBlock(
         for child_usage_id in self.children:  # pylint: disable=no-member
             child_block = self.runtime.get_block(child_usage_id)
             if child_block:
+                weight = self._get_weighted_score_possible_for_child(child_block)
                 child_block_data = {
-                    'usage_id': text_type(child_usage_id),
+                    'usage_id': str(child_usage_id),
                     'block_type': child_block.scope_ids.block_type,
                     'display_name': child_block.display_name,
-                    'graded': getattr(child_block, 'graded', False)
+                    'graded': weight > 0,
+                    # Max attempts: 0 means unlimited, None means not applicable
+                    'max_attempts': getattr(child_block, 'max_attempts', None),
+                    # Weight: the (weighted) maximum possible score that students can earn on this child XBlock
+                    'weight': weight,
                 }
                 child_blocks_data.append(child_block_data)
 
@@ -84,7 +85,7 @@ class AssignmentBlock(
             child_block = self.runtime.get_block(child_usage_id)
             if child_block:
                 score = self.get_weighted_score_for_block(child_block)
-                child_blocks_state[text_type(child_usage_id)] = {'score': score}
+                child_blocks_state[str(child_usage_id)] = {'score': score}
                 if score:
                     total_earned += score['earned']
                     total_possible += score['possible']
@@ -109,6 +110,21 @@ class AssignmentBlock(
 
         If weight is None or raw_possible is 0, returns the original values.
         """
+        # If this is a unit with children:
+        if getattr(block, 'has_children', False):
+            earned = 0
+            possible = 0
+            any_graded = False
+            for child in block.get_children():
+                data = self.get_weighted_score_for_block(child)
+                if data is None:
+                    continue
+                any_graded = True
+                earned += data['earned']
+                possible += data['possible']
+            if any_graded:
+                return {'earned': earned, 'possible': possible}
+        # If this is a scorable block like a capa problem:
         if getattr(block, 'has_score', False) is True:
             score = block.get_score()
             if score is not None:
@@ -124,3 +140,30 @@ class AssignmentBlock(
                         'possible': float(block.weight),
                     }
         return None
+
+    def _get_weighted_score_possible_for_child(self, block):
+        """
+        Get the [weighted] maximum possible score for an XBlock.
+        """
+        if getattr(block, 'has_children', False):
+            return sum(self._get_weighted_score_possible_for_child(child) for child in block.get_children())
+        elif not getattr(block, 'has_score', False):
+            return 0
+        weight_factor = getattr(block, 'weight', 1)
+        if weight_factor is not None:
+            return weight_factor
+        # This is not a weighted problem, so we need to determine the raw score possible.
+        # Determining the number of points possible in a capa problem requires initializing its
+        # LoncapaSystem/LoncapaProblem, which requires a user ID. But this gets called from student_view_data, and
+        # student_view data is meant to be user-agnostic and can be called without any user ID provided.
+        if self.scope_ids.user_id is not None:
+            # If we have a user ID, let's use it to determine the possible score accurately. Note that this works for
+            # any scorable XBlock, not just capa.
+            score = block.get_score()
+            if score:
+                return score.raw_possible
+            return 1
+        else:
+            # If we don't have a user_id, we can't fetch the real 'raw_possible' value, so let's just assume
+            # it's the default (one single question/response) in the XBlock.
+            return 1

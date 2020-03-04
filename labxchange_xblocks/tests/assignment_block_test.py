@@ -58,11 +58,15 @@ class AssignmentBlockTestCase(XmlTest, BlockTestCaseBase):
                     'display_name': 'Assignment Document',
                     'usage_id': 'lx_document',
                     'graded': False,
+                    'max_attempts': None,
+                    'weight': 0,
                 }, {
                     'block_type': 'lx_image',
                     'display_name': 'Assignment Image',
                     'usage_id': 'lx_image',
                     'graded': False,
+                    'max_attempts': None,
+                    'weight': 0,
                 }
             ],
             u'display_name': u'Assignment 1'
