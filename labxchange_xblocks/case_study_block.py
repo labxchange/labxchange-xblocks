@@ -2,10 +2,6 @@
 """
 Case Study XBlock.
 """
-
-from __future__ import absolute_import, unicode_literals
-
-from six import text_type
 from xblock.completable import XBlockCompletionMode
 from xblock.core import XBlock
 from xblock.fields import Scope, String
@@ -57,7 +53,7 @@ class CaseStudyBlock(
             child_block = self.runtime.get_block(child_usage_id)
             if child_block:
                 child_block_data = {
-                    'usage_id': text_type(child_usage_id),
+                    'usage_id': str(child_usage_id),
                     'block_type': child_block.scope_ids.block_type,
                     'display_name': child_block.display_name,
                 }

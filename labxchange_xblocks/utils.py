@@ -1,8 +1,6 @@
 """
 Helper code.
 """
-from __future__ import absolute_import, unicode_literals
-
 import json
 
 from web_fragments.fragment import Fragment

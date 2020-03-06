@@ -2,9 +2,6 @@
 """
 Document XBlock.
 """
-
-from __future__ import absolute_import, unicode_literals
-
 from xblock.core import XBlock
 from xblock.fields import Scope, String
 from xblockutils.studio_editable import StudioEditableXBlockMixin
