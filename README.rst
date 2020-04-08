@@ -1,8 +1,6 @@
 labxchange-xblocks
 =============================
 
-|travis-badge| |codecov-badge|
-
 This repository contains XBlocks developed for the LabXchange project.
 
 Overview
