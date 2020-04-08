@@ -1,7 +1,12 @@
 # Core requirements for using this application
--c constraints.txt
 
-Django>=1.11,<2.0          # Web application framework
-XBlock
-xblock-utils
+# As this is an Open edX plugin, we rely on Open edX to define most of the
+# requirements. It wouldn't help to specify them here again (ideally we
+# could specify our assumptions and pip would warn us if the platform's
+# pinned versions no longer match, but unfortunately doing that just causes
+# pip to downgrade the package rather than displaying a version conflict
+# error.)
 
+# If any requirements in addition to those installed by Open edX are needed,
+# specify them here (or in quality.in, test.in, etc.):
+# Core requirements for using this application
