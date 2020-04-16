@@ -105,6 +105,7 @@ setup(
     entry_points={
         'xblock.v1': [
             'lx_assignment = labxchange_xblocks.assignment_block:AssignmentBlock',
+            'lx_audio = labxchange_xblocks.audio_block:AudioBlock',
             'lx_case_study = labxchange_xblocks.case_study_block:CaseStudyBlock',
             'lx_document = labxchange_xblocks.document_block:DocumentBlock',
             'lx_image = labxchange_xblocks.image_block:ImageBlock',

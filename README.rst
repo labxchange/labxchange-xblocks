@@ -12,6 +12,7 @@ Overview
 4. Image XBlock
 5. Simulation XBlock (animated labs and exercises)
 6. Story in Science XBlock (stories from https://storiesinscience.org)
+7. Audio XBlock (renders embed codes from sites such as, but not limited to, SoundCloud or Sticher)
 
 License
 -------
