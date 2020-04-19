@@ -15,6 +15,16 @@ Unreleased
 ~~~~~~~~~~
 
 
+[0.4.0] - 2020-04-19
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Drop Python 2 support
+* Improve data that lx_assignment block provides about its children
+* Remove Django dependencies
+* Fix Python 3 test issue
+* Implement the Audio XBlock
+
+
 [0.3.0] - 2019-10-31
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
