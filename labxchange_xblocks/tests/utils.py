@@ -55,3 +55,9 @@ class BlockTestCaseBase(TestCase):
 
         fragment = block.student_view(None)
         self.assertXmlEqual(fragment.content, expected_html)
+
+    def _test_public_view(self, field_data, expected_html):
+        block = self._construct_xblock_mock(self.block_class, self.keys, field_data=DictFieldData(field_data))
+
+        fragment = block.public_view(None)
+        self.assertXmlEqual(fragment.content, expected_html)

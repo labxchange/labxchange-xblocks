@@ -51,3 +51,4 @@ class SimulationBlockTestCase(BlockTestCaseBase):
     @ddt.unpack
     def test_student_view(self, field_data, _expected_data, expected_html):
         self._test_student_view(field_data, expected_html)
+        self._test_public_view(field_data, expected_html)

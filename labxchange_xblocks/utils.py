@@ -48,6 +48,19 @@ class StudentViewBlockMixin(XBlockMixin):
         """
         Render student view for LMS.
         """
+        return self._lms_view(context, 'student_view')
+
+    @XBlock.supports("multi_device")  # Mark as mobile-friendly
+    def public_view(self, context=None):
+        """
+        Render public view for LMS.
+        """
+        return self._lms_view(context, 'public_view')
+
+    def _lms_view(self, context, child_view):
+        """
+        Render the view for LMS.
+        """
         context = context or {}
 
         fragment = Fragment()
@@ -58,7 +71,7 @@ class StudentViewBlockMixin(XBlockMixin):
             for child_usage_id in self.children:
                 child_block = self.runtime.get_block(child_usage_id)
                 if child_block:
-                    child_block_fragment = child_block.render('student_view', context)
+                    child_block_fragment = child_block.render(child_view, context)
                     child_block_content = child_block_fragment.content
                     fragment.add_fragment_resources(child_block_fragment)
                     child_blocks_data.append({
@@ -73,8 +86,6 @@ class StudentViewBlockMixin(XBlockMixin):
             fragment.add_css_url(self.runtime.local_resource_url(self, self.css_resource_url))
 
         return fragment
-
-    public_view = student_view
 
     @XBlock.handler
     def v1_student_view_data(self, request, suffix=None):  # pylint: disable=unused-argument
