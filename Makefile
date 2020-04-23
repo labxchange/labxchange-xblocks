@@ -50,6 +50,7 @@ quality: ## check coding style with pycodestyle and pylint
 # uses.  We use no-cov and nomigrations because they _really_ speed up the test
 # run.
 test: clean
+	mkdir test_root
 	python -m pytest --ds=lms.envs.test --no-cov --nomigrations $(PROJECT_ROOT)labxchange_xblocks/tests/
 
 diff_cover: test ## find diff lines that need test coverage
