@@ -51,3 +51,5 @@ class AudioBlockTestCase(BlockTestCaseBase):
 
         fragment = block.student_view(None)
         self.assertEqual(fragment.content, expected_html)
+        fragment = block.public_view(None)
+        self.assertEqual(fragment.content, expected_html)
