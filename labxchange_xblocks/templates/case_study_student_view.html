@@ -1,12 +1,20 @@
 <div class="case-study-block-student-view">
-    {% for child_block in child_blocks %}
-    <div class="case-study-block-child-student-view">
-        <div class="case-study-block-child-display-name">
-            {{ child_block.display_name }}
-        </div>
-        <div class="case-study-block-child-content">
-            {{ child_block.content|safe }}
-        </div>
-    </div>
+    {% for section in sections %}
+        <section class="case-study-block-section">
+            <h2 class="case-study-block-section-title">
+                {{ section.title }}
+            </h2>
+            {% for child in section.children %}
+                {% if child.inlinehtml %}
+                    <div class="case-study-block-child case-study-block-inlinetext-content">
+                        {{ child.inlinehtml|safe }}
+                    </div>
+                {% else %}
+                    <div class="case-study-block-child case-study-block-child-content">
+                        {{ child_blocks|get_xblock_content:child.usage_id|safe }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </section>
     {% endfor %}
 </div>
