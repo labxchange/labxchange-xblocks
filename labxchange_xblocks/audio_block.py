@@ -42,6 +42,7 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
     editable_fields = (
         'display_name',
         'embed_code',
+        'transcripts',
     )
 
     student_view_template = 'templates/audio_student_view.html'
@@ -54,4 +55,5 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
         return {
             'display_name': self.display_name,
             'embed_code': self.embed_code,
+            'transcripts': self.transcripts,
         }
