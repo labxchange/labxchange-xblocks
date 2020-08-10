@@ -3,7 +3,7 @@
 Audio XBlock.
 """
 from xblock.core import XBlock
-from xblock.fields import Scope, String
+from xblock.fields import Dict, Scope, String
 from xblockutils.studio_editable import StudioEditableXBlockMixin
 
 from .utils import StudentViewBlockMixin, _
@@ -28,6 +28,15 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
         multiline_editor='html',
         resettable_editor=False,
         scope=Scope.content,
+    )
+
+    # Data format: {'de': 'german_translation', 'uk': 'ukrainian_translation'}
+    transcripts = Dict(
+        help=_('Add transcripts in different languages.'
+               ' Click below to specify a language and upload an .srt transcript file for that language.'),
+        display_name=_('Transcript Languages'),
+        scope=Scope.settings,
+        default={}
     )
 
     editable_fields = (
