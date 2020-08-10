@@ -3,6 +3,7 @@ Helper code.
 """
 import json
 
+from django.template.defaulttags import register
 from web_fragments.fragment import Fragment
 from webob import Response
 from xblock.core import XBlock, XBlockMixin
@@ -10,6 +11,17 @@ from xblockutils.resources import ResourceLoader
 from xblockutils.studio_editable import NestedXBlockSpec
 
 loader = ResourceLoader(__name__)
+
+
+@register.filter
+def get_xblock_content(child_blocks, usage_id):
+    """
+    Helper function to get the content of an xblock from the standard `child_blocks` list,
+    given an xblock `usage_id`.
+    """
+    for block in child_blocks:
+        if block.get("usage_id") == usage_id:
+            return block.get("content")
 
 
 def _(text):
@@ -75,6 +87,7 @@ class StudentViewBlockMixin(XBlockMixin):
                     child_block_content = child_block_fragment.content
                     fragment.add_fragment_resources(child_block_fragment)
                     child_blocks_data.append({
+                        'usage_id': str(child_usage_id),
                         'content': child_block_content,
                         'display_name': child_block.display_name,
                     })
