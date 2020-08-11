@@ -48,6 +48,12 @@ class StudentViewBlockMixin(XBlockMixin):
 
     student_view_template = None
     css_resource_url = None
+    js_resource_url = None
+    js_init_function = None
+
+    @property
+    def user_state(self):
+        return {}
 
     def student_view_data(self, context=None):  # pylint: disable=unused-argument
         """
@@ -97,7 +103,12 @@ class StudentViewBlockMixin(XBlockMixin):
 
         if self.css_resource_url:
             fragment.add_css_url(self.runtime.local_resource_url(self, self.css_resource_url))
-
+        
+        if self.js_resource_url and self.js_init_function:
+            fragment.add_javascript_url(self.runtime.local_resource_url(self, self.js_resource_url))
+            fragment.initialize_js(
+                self.js_init_function, {'user_state': self.user_state}
+            )
         return fragment
 
     @XBlock.handler
