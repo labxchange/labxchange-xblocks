@@ -156,16 +156,11 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
                 lang = lang.rstrip('/')
 
             asset = self.get_transcript_asset(lang)
-            
             if not asset:
                 return Response(status=404)
 
-            headerlist = [
-                ('Content-Language', lang),
-            ]
-
             transcript = self.get_transcript(asset.url)
-
+            headerlist = [('Content-Language', lang),]
             headerlist.append(
                 (
                     'Content-Disposition',
@@ -179,7 +174,5 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
                 charset='utf8'
             )
             response.content_type = 'text/srt'
-
             return response
-        
         return Response(status=400)

@@ -1,36 +1,36 @@
 function LXAudioXBlock(runtime, element, init_args) {
     'use strict';
 
-    var LanguageSelector = function(element_id, user_state) {
+    var LanguageSelector = function(element_selector, user_state) {
         this.user_state = user_state;
-        this.element = $('.' + element_id, element);
+        this.element = $('.' + element_selector, element);
+        this.sequencesElement = this.element.find('.audio-block-sequences-student-view');
         this.currentLang = user_state.current_lang || '';
         this.getSequencesUrl = runtime.handlerUrl(element, 'sequences');
-
         this.init();
     }
 
     LanguageSelector.prototype.init = function() {
-        var that = this;
-        this.element.on('change', function() {
-            console.log(this.value)
-            that.getSequences(this.value)
+        var self = this;
+        this.element.find('.audio-block-transcript-select')
+                    .on('change', function() {
+            self.getSequences(this.value)
         })
         this.getSequences(this.currentLang);
+        this.element.find()
     }
 
     LanguageSelector.prototype.getSequences = function(lang) {
+        var sequencesElement = this.sequencesElement;
         $.ajax({
             url: this.getSequencesUrl,
             data: JSON.stringify({'lang': lang}),
             contentType: 'application/json',
             method: 'POST',
         }).done(function(data) {
-            var element = $('.audio-block-sequences-student-view');
-            element.html('');
+            sequencesElement.html('');
             data.map(function(sequence, index) {
-                console.log(sequence)
-                element.append(
+                sequencesElement.append(
                     '<div class="audio-block-sequences-line-student-view">' +
                         '<div class="audio-block-sequences-start-student-view">' +
                             `${sequence.start.hours}:${sequence.start.minutes}:${sequence.start.seconds}` +
@@ -45,7 +45,7 @@ function LXAudioXBlock(runtime, element, init_args) {
     }
 
     var languageSelector = new LanguageSelector(
-        'audio-block-transcript-select',
+        'audio-block-student-view',
         init_args.user_state,
     );
 }
