@@ -159,7 +159,7 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
             if not asset:
                 return Response(status=404)
 
-            transcript = self.get_transcript(asset.url)
+            transcript = self.get_transcript_content(asset.url)
             headerlist = [('Content-Language', lang),]
             headerlist.append(
                 (
