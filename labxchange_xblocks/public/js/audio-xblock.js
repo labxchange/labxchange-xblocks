@@ -5,7 +5,9 @@ function LXAudioXBlock(runtime, element, init_args) {
         this.user_state = user_state;
         this.element = $('.' + element_selector, element);
         this.sequencesElement = this.element.find('.audio-block-sequences-student-view');
+        this.toggleElement = this.element.find('.audio-block-transcript-toggle');
         this.currentLang = user_state.current_lang || '';
+        this.folded = false;
         this.getSequencesUrl = runtime.handlerUrl(element, 'sequences');
         this.init();
     }
@@ -14,10 +16,11 @@ function LXAudioXBlock(runtime, element, init_args) {
         var self = this;
         this.element.find('.audio-block-transcript-select')
                     .on('change', function() {
-            self.getSequences(this.value)
-        })
+            self.getSequences(this.value);
+        });
         this.getSequences(this.currentLang);
-        this.element.find()
+        this.element.find('.audio-block-transcript-toggle')
+            .on('click', function() { self.toggleBlock(); });
     }
 
     LanguageSelector.prototype.getSequences = function(lang) {
@@ -42,6 +45,18 @@ function LXAudioXBlock(runtime, element, init_args) {
                 );
             })
         });
+    }
+
+    LanguageSelector.prototype.toggleBlock = function() {
+        this.folded = !this.folded;
+        this.sequencesElement.toggle();
+        if (this.folded) {
+            this.element.removeClass('unfolded');
+            this.element.addClass('folded');
+        } else {
+            this.element.addClass('unfolded');
+            this.element.removeClass('folded');
+        }
     }
 
     var languageSelector = new LanguageSelector(
