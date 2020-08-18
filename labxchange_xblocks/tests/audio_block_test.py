@@ -13,6 +13,7 @@ class AudioBlockTestCase(BlockTestCaseBase):
 
     block_type = 'lx_audio'
     block_class = AudioBlock
+    maxDiff = None
 
     data = (
         (
@@ -20,21 +21,63 @@ class AudioBlockTestCase(BlockTestCaseBase):
             {
                 'display_name': 'Audio',
                 'embed_code': '',
+                'options': [],
+                'sequences': [],
+                'transcripts': {},
+                'user_state': { 'current_language': None },
             },
             (
-                '<div class="audio-block-student-view">\n    \n</div>\n'
+                """<div class="audio-block-student-view unfolded">
+    <div class="audio-block-embed-code-student-view">
+        
+    </div>
+    <div class="audio-block-transcript-student-view">
+        <div class="audio-block-transcript-title-student-view">
+            <h2>Transcripts</h2>
+            <select class="audio-block-transcript-select">
+                
+            </select>
+            <button class="audio-block-transcript-toggle"></button>
+        </div>
+        <div class="audio-block-sequences-student-view"></div>
+    </div>
+</div>
+"""
             ),
         ), (
             {
                 'display_name': 'A very cool track',
                 'embed_code': '<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/794640376&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>',  # noqa: E501
+                'options': [],
+                'sequences': [],
+                'transcripts': {},
+                'user_state': { 'current_language': None },
             },
             {
                 'display_name': 'A very cool track',
                 'embed_code': '<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/794640376&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>',  # noqa: E501
+                'options': [],
+                'sequences': [],
+                'transcripts': {},
+                'user_state': { 'current_language': None },
             },
             (
-                '<div class="audio-block-student-view">\n    <iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/794640376&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>\n</div>\n'  # noqa: E501
+                """<div class="audio-block-student-view unfolded">
+    <div class="audio-block-embed-code-student-view">
+        <iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/794640376&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
+    </div>
+    <div class="audio-block-transcript-student-view">
+        <div class="audio-block-transcript-title-student-view">
+            <h2>Transcripts</h2>
+            <select class="audio-block-transcript-select">
+                
+            </select>
+            <button class="audio-block-transcript-toggle"></button>
+        </div>
+        <div class="audio-block-sequences-student-view"></div>
+    </div>
+</div>
+"""
             ),
         )
     )

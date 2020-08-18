@@ -1,3 +1,23 @@
-<div class="audio-block-student-view">
-    {{ embed_code|safe }}
+<div class="audio-block-student-view unfolded">
+    <div class="audio-block-embed-code-student-view">
+        {{ embed_code|safe }}
+    </div>
+    <div class="audio-block-transcript-student-view">
+        <div class="audio-block-transcript-title-student-view">
+            <h2>Transcripts</h2>
+            <select class="audio-block-transcript-select">
+                {% for option in options %}
+                    <option value="{{ option.lang }}"
+                        {% if user_state.current_language == option.lang %}
+                            selected="selected"
+                        {% endif %}
+                    >
+                        Language: {{ option.language.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button class="audio-block-transcript-toggle"></button>
+        </div>
+        <div class="audio-block-sequences-student-view"></div>
+    </div>
 </div>
