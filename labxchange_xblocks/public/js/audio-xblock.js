@@ -34,7 +34,7 @@ function LXAudioXBlock(runtime, element, init_args) {
             sequencesElement.html('');
             data.map(function(sequence, index) {
                 sequencesElement.append(
-                    '<div class="audio-block-sequences-line-student-view">' +
+                    `<div class="audio-block-sequences-line-student-view ${index == 0 ? 'first-line' : ''}">` +
                         '<div class="audio-block-sequences-start-student-view">' +
                             `${sequence.start.hours}:${sequence.start.minutes}:${sequence.start.seconds}` +
                         '</div>' +
