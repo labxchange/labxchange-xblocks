@@ -89,7 +89,10 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
         current_language = None
         if languages:
             current_language = list(languages)[0]
-        return {'current_language': current_language}
+        return {
+            'current_language': current_language,
+            'sequences_url': self.runtime.handler_url(self, 'sequences', '', '').rstrip('/?'),
+        }
 
     @property
     def assets(self):
