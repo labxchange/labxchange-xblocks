@@ -8,7 +8,7 @@ function LXAudioXBlock(runtime, element, init_args) {
         this.toggleElement = this.element.find('.audio-block-transcript-toggle');
         this.currentLang = user_state.current_lang || '';
         this.folded = false;
-        this.getSequencesUrl = runtime.handlerUrl(element, 'sequences');
+        this.getSequencesUrl = user_state.sequences_url;
         this.init();
     }
 
