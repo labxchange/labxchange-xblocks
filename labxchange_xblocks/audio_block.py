@@ -141,7 +141,7 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
         return response.content
 
     @XBlock.handler
-    def sequences(self, request, suffix=''):
+    def sequences(self, request, dispatch):
         """ Returns sequences based on lang parameter """
         lang = request.GET.get('lang', None)
         if not lang:
