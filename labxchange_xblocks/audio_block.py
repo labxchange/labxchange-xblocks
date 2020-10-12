@@ -2,6 +2,8 @@
 """
 Audio XBlock.
 """
+import json
+
 import six
 import requests
 from webob import Response
@@ -91,7 +93,6 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
             current_language = list(languages)[0]
         return {
             'current_language': current_language,
-            'sequences_url': self.runtime.handler_url(self, 'sequences', '', '').rstrip('/?'),
         }
 
     @property
@@ -139,17 +140,21 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
         response = requests.get(url)
         return response.content
 
-    @XBlock.json_handler
-    def sequences(self, data, suffix=''):
+    @XBlock.handler
+    def sequences(self, request, dispatch):
         """ Returns sequences based on lang parameter """
-        lang = data.get('lang')
+        lang = request.GET.get('lang', None)
         if not lang:
             lang = self.user_state.get('current_language')
 
         lang = lang.rstrip('/')
         asset = self.get_transcript_asset(lang)
         content = self.get_transcript_content(asset.url)
-        return self.get_sequences(content)
+        return Response(
+            json.dumps(self.get_sequences(content)),
+            headerlist=[('Content-Type', 'application/json')],
+            charset='utf8'
+        )
 
     @XBlock.handler
     def transcript(self, request, dispatch):

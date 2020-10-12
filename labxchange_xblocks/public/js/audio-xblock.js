@@ -8,7 +8,7 @@ function LXAudioXBlock(runtime, element, init_args) {
         this.toggleElement = this.element.find('.audio-block-transcript-toggle');
         this.currentLang = user_state.current_lang || '';
         this.folded = false;
-        this.getSequencesUrl = user_state.sequences_url;
+        this.getSequencesUrl = runtime.handlerUrl(element, 'sequences');
         this.init();
     }
 
@@ -26,10 +26,8 @@ function LXAudioXBlock(runtime, element, init_args) {
     LanguageSelector.prototype.getSequences = function(lang) {
         var sequencesElement = this.sequencesElement;
         $.ajax({
-            url: this.getSequencesUrl,
-            data: JSON.stringify({'lang': lang}),
-            contentType: 'application/json',
-            method: 'POST',
+            url: this.getSequencesUrl + '?lang=' + lang,
+            method: 'GET',
         }).done(function(data) {
             sequencesElement.html('');
             data.map(function(sequence, index) {
