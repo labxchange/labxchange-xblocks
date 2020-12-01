@@ -84,7 +84,7 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
             'sequences': sequences,
             'user_state': self.user_state,
         }
-    
+
     @property
     def user_state(self):
         languages = self.transcripts.keys()
@@ -134,7 +134,7 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
 
                 },
             } for sequence in sequences]
-    
+
     def get_transcript_content(self, url):
         """ Retrieves and returns transcript content from Blockstore """
         response = requests.get(url)
