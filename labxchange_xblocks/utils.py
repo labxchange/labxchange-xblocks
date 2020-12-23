@@ -87,7 +87,10 @@ class StudentViewBlockMixin(XBlockMixin):
         if self.has_children:
             child_blocks_data = []
             for child_usage_id in self.children:
-                child_block = self.runtime.get_block(child_usage_id)
+                try:
+                    child_block = self.runtime.get_block(child_usage_id)
+                except Exception:
+                    child_block = None
                 if child_block:
                     child_block_fragment = child_block.render(child_view, context)
                     child_block_content = child_block_fragment.content
@@ -103,7 +106,7 @@ class StudentViewBlockMixin(XBlockMixin):
 
         if self.css_resource_url:
             fragment.add_css_url(self.runtime.local_resource_url(self, self.css_resource_url))
-        
+
         if self.js_resource_url and self.js_init_function:
             fragment.add_javascript_url(self.runtime.local_resource_url(self, self.js_resource_url))
             fragment.initialize_js(
