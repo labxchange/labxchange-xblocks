@@ -54,7 +54,7 @@ class AssignmentBlock(
         for child_usage_id in self.children:  # pylint: disable=no-member
             try:
                 child_block = self.runtime.get_block(child_usage_id)
-            except Exception:
+            except ValueError:
                 child_block = None
             if child_block:
                 weight = self._get_weighted_score_possible_for_child(child_block)
@@ -87,7 +87,7 @@ class AssignmentBlock(
         for child_usage_id in self.children:  # pylint: disable=no-member
             try:
                 child_block = self.runtime.get_block(child_usage_id)
-            except Exception:
+            except ValueError:
                 child_block = None
             if child_block:
                 score = self.get_weighted_score_for_block(child_block)

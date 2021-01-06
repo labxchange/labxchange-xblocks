@@ -77,7 +77,7 @@ For example: [
         for child_usage_id in self.children:  # pylint: disable=no-member
             try:
                 child_block = self.runtime.get_block(child_usage_id)
-            except Exception:
+            except ValueError:
                 child_block = None
             if child_block:
                 valid_child_block_ids.add(str(child_usage_id))

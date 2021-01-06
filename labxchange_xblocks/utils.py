@@ -89,7 +89,7 @@ class StudentViewBlockMixin(XBlockMixin):
             for child_usage_id in self.children:
                 try:
                     child_block = self.runtime.get_block(child_usage_id)
-                except Exception:
+                except ValueError:
                     child_block = None
                 if child_block:
                     child_block_fragment = child_block.render(child_view, context)
