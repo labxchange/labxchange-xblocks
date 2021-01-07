@@ -84,6 +84,59 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
             },
         )
 
+    def test_student_view_data_missing_child(self):
+
+        field_data = {"display_name": "Case Study 1"}
+        block = self._construct_xblock_mock(
+            self.block_class, self.keys, field_data=DictFieldData(field_data)
+        )
+
+        document_block_keys = ScopeIds(
+            "a_user", "lx_document", "def_id_document", "usage_id_document"
+        )
+        document_block = DocumentBlock(
+            self.runtime_mock,
+            scope_ids=document_block_keys,
+            field_data=DictFieldData({"display_name": "CS Document",}),
+        )
+        block.children.append(document_block.scope_ids.block_type)
+
+        image_block_keys = ScopeIds(
+            "a_user", "lx_image", "def_id_image", "usage_id_image"
+        )
+        image_block = self._construct_xblock_mock(
+            ImageBlock,
+            image_block_keys,
+            field_data=DictFieldData({"display_name": "CS Image",}),
+        )
+        block.children.append(image_block.scope_ids.block_type)
+
+        def get_block(usage_id):
+            if usage_id == "lx_document":
+                raise ValueError("mock block not found")
+            if usage_id == "lx_image":
+                return image_block
+
+        self.runtime_mock.get_block.side_effect = get_block
+
+        data = block.student_view_data(context=None)
+
+        self.assertDictEqual(
+            data,
+            {
+                "child_blocks": [
+                    {
+                        "block_type": "lx_image",
+                        "display_name": "CS Image",
+                        "usage_id": "lx_image",
+                    },
+                ],
+                "display_name": "Case Study 1",
+                "sections": [],
+                "attachments": [],
+            },
+        )
+
     @ddt.data(
         (
             [
