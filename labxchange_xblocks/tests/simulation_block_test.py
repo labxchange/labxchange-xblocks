@@ -22,7 +22,7 @@ class SimulationBlockTestCase(BlockTestCaseBase):
             },
             (
                 '<div class="simulation-block-student-view">\n'
-                '<iframe src="" title="Simulation">\n</iframe>\n'
+                '<iframe title="Simulation" src="">\n</iframe>\n'
                 '</div>'
             ),
         ), (
@@ -36,7 +36,7 @@ class SimulationBlockTestCase(BlockTestCaseBase):
             },
             (
                 '<div class="simulation-block-student-view">\n'
-                '<iframe src="https://cdn.org/galaxy.jpeg" title="A galaxy - ایک کہکشاں">\n</iframe>\n'
+                '<iframe title="A galaxy - ایک کہکشاں" src="https://cdn.org/galaxy.jpeg">\n</iframe>\n'
                 '</div>'
             ),
         )

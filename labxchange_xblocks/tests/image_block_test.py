@@ -28,7 +28,7 @@ class ImageBlockTestCase(BlockTestCaseBase):
             # And this HTML:
             (
                 '<figure class="image-block-student-view">\n'
-                '<img alt="" class="image-block-image" src=""/>\n'
+                '<img class="image-block-image" src="" alt=""/>\n'
                 '</figure>'
             )
         ), (
@@ -51,8 +51,8 @@ class ImageBlockTestCase(BlockTestCaseBase):
             # And this HTML:
             (
                 '<figure class="image-block-student-view">\n'
-                '<img alt="Map of the moon - چاند کا نقشہ" class="image-block-image"\n'
-                ' src="https://cdn.org/moon.jpeg"/>\n'
+                '<img class="image-block-image" src="https://cdn.org/moon.jpeg"\n'
+                ' alt="Map of the moon - چاند کا نقشہ"/>\n'
                 '<figcaption>\n'
                 '<span class="caption">Fig. 1: Map of the moon - چاند کا نقشہ</span>\n'
                 '<cite>Courtesy NASA Lunar Reconnaissance Orbiter science team</cite>\n'

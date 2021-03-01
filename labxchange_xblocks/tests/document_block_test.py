@@ -24,7 +24,7 @@ class DocumentBlockTestCase(BlockTestCaseBase):
             },
             (
                 '<div class="document-block-student-view">\n'
-                '<object aria-label="Document" data="" type="application/pdf">\n'
+                '<object data="" type="application/pdf" aria-label="Document">\n'
                 '<p>It appears you don\'t have an appropriate viewer plugin installed.'
                 ' Click <a href="">here</a> to view the file.</p>\n'
                 '</object>\n'
@@ -45,7 +45,7 @@ class DocumentBlockTestCase(BlockTestCaseBase):
             },
             (
                 '<div class="document-block-student-view">\n'
-                '<object aria-label="Stars - ستارے" data="https://cdn.org/stars.jpeg" type="text/html">\n'
+                '<object data="https://cdn.org/stars.jpeg" type="text/html" aria-label="Stars - ستارے">\n'
                 '<p>It appears you don\'t have an appropriate viewer plugin installed.'
                 ' Click <a href="https://cdn.org/stars.jpeg">here</a> to view the file.</p>\n'
                 '</object>\n'

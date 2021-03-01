@@ -10,9 +10,15 @@
                         {{ child.inlinehtml|safe }}
                     </div>
                 {% else %}
-                    <div class="case-study-block-child case-study-block-child-content">
-                        {{ child_blocks|get_xblock_content:child.usage_id|safe }}
-                    </div>
+                    {% if child.embed %}
+                        <div class="case-study-block-child case-study-block-child-content">
+                            {{ child_blocks|get_xblock_content:child.usage_id|safe }}
+                        </div>
+                    {% else %}
+                        <div class="case-study-block-child case-study-block-child-content">
+                            Non-embedded asset with id: {{ child.usage_id }}
+                        </div>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
         </section>

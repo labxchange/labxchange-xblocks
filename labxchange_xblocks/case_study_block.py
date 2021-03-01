@@ -22,7 +22,7 @@ class CaseStudyBlock(
     XBlockWithPreviewMixin,
 ):
     """
-    XBlock for case studies.
+    XBlock for case studies and teaching guides.
     """
 
     display_name = String(
@@ -95,10 +95,15 @@ For example: [
                     children.append({
                         "inlinehtml": child["inlinehtml"]
                     })
-                elif child.get("usage_id") in valid_child_block_ids:
-                    children.append({
-                        "usage_id": child["usage_id"],
-                    })
+                elif child.get("usage_id"):
+                    # if we're embedding, it needs to be a valid xblock
+                    if child.get("embed", True) and not child["usage_id"] in valid_child_block_ids:
+                        continue
+                    else:
+                        children.append({
+                            "usage_id": child["usage_id"],
+                            "embed": child.get("embed", True),
+                        })
 
             sections.append({
                 "title": section.get("title", ""),
@@ -107,7 +112,7 @@ For example: [
 
         attachments = []
         for xblock_id in self.attachments:
-            if isinstance(xblock_id, str) and xblock_id in valid_child_block_ids:
+            if isinstance(xblock_id, str):
                 attachments.append(xblock_id)
 
         return {
