@@ -22,6 +22,9 @@ class DocumentBlockTestCase(BlockTestCaseBase):
                 'document_name': '',
                 'document_url': '',
             },
+# E   - 	<object data="" type="application/pdf" aria-label="Document">
+# E   + 	<object aria-label="Document" data="" type="application/pdf">
+
             (
                 '<div class="document-block-student-view">\n'
                 '<object data="" type="application/pdf" aria-label="Document">\n'
