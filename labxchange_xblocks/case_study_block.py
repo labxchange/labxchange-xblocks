@@ -4,6 +4,7 @@ Case Study XBlock.
 """
 from xblock.completable import XBlockCompletionMode
 from xblock.core import XBlock
+from xblock.exceptions import XBlockParseException
 from xblock.fields import List, Scope, String
 from xblockutils.studio_editable import (
     StudioContainerWithNestedXBlocksMixin,
@@ -75,7 +76,11 @@ For example: [
         child_blocks = []
 
         for child_usage_id in self.children:  # pylint: disable=no-member
-            child_block = self.runtime.get_block(child_usage_id)
+            try:
+                child_block = self.runtime.get_block(child_usage_id)
+            except XBlockParseException:
+                child_block = None
+
             if child_block:
                 valid_child_block_ids.add(str(child_usage_id))
                 child_block_data = {

@@ -7,6 +7,7 @@ from django.template.defaulttags import register
 from web_fragments.fragment import Fragment
 from webob import Response
 from xblock.core import XBlock, XBlockMixin
+from xblock.exceptions import XBlockParseException
 from xblockutils.resources import ResourceLoader
 from xblockutils.studio_editable import NestedXBlockSpec
 
@@ -79,7 +80,11 @@ class StudentViewBlockMixin(XBlockMixin):
         if self.has_children:
             child_blocks_data = []
             for child_usage_id in self.children:
-                child_block = self.runtime.get_block(child_usage_id)
+                try:
+                    child_block = self.runtime.get_block(child_usage_id)
+                except XBlockParseException:
+                    child_block = None
+
                 if child_block:
                     child_block_fragment = child_block.render(child_view, initial_context)
                     child_block_content = child_block_fragment.content
