@@ -75,7 +75,6 @@ class AudioBlockTestCase(BlockTestCaseBase):
         block = self._construct_xblock_mock(self.block_class, self.keys, field_data=DictFieldData(field_data))
 
         fragment = block.student_view(None)
-        print(fragment.content)
         self.assertEqual(fragment.content, expected_html)
         fragment = block.public_view(None)
         self.assertEqual(fragment.content, expected_html)
