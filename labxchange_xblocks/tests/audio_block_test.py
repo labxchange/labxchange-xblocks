@@ -31,16 +31,7 @@ class AudioBlockTestCase(BlockTestCaseBase):
     <div class="audio-block-embed-code-student-view">
         
     </div>
-    <div class="audio-block-transcript-student-view">
-        <div class="audio-block-transcript-title-student-view">
-            <h2>Transcripts</h2>
-            <select class="audio-block-transcript-select">
-                
-            </select>
-            <button class="audio-block-transcript-toggle"></button>
-        </div>
-        <div class="audio-block-sequences-student-view"></div>
-    </div>
+    
 </div>
 """
             ),
@@ -66,16 +57,7 @@ class AudioBlockTestCase(BlockTestCaseBase):
     <div class="audio-block-embed-code-student-view">
         <iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/794640376&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
     </div>
-    <div class="audio-block-transcript-student-view">
-        <div class="audio-block-transcript-title-student-view">
-            <h2>Transcripts</h2>
-            <select class="audio-block-transcript-select">
-                
-            </select>
-            <button class="audio-block-transcript-toggle"></button>
-        </div>
-        <div class="audio-block-sequences-student-view"></div>
-    </div>
+    
 </div>
 """
             ),

@@ -19,6 +19,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
 
     block_type = "lx_case_study"
     block_class = CaseStudyBlock
+    maxDiff = None
 
     def test_is_aggregator(self):
         self.assertEqual(
@@ -91,11 +92,11 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
                     "title": "Section One",
                     "children": [
                         {"inlinehtml": "<span>hello</span>"},
-                        {"usage_id": "lx_image"},
+                        {"usage_id": "lx_image", "embed": True},
                         {
                             "inlinehtml": ["ignore", "this"]
                         },  # invalid type here will be dropped from output
-                        {"usage_id": "lx_image"},  # dups are ok here
+                        {"usage_id": "lx_image", "embed": True},  # dups are ok here
                     ],
                 },
                 {
@@ -114,8 +115,8 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
                     "title": "Section One",
                     "children": [
                         {"inlinehtml": "<span>hello</span>"},
-                        {"usage_id": "lx_image"},
-                        {"usage_id": "lx_image"},  # dups are ok here
+                        {"usage_id": "lx_image", "embed": True},
+                        {"usage_id": "lx_image", "embed": True},  # dups are ok here
                     ],
                 },
                 {"title": "Section Two", "children": [{"inlinehtml": ""},],},
@@ -128,7 +129,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
                     "title": "Section One",
                     "children": [
                         {"inlinehtml": "<span>hello</span>"},
-                        {"usage_id": "lx_image"},
+                        {"usage_id": "lx_image", "embed": True},
                     ],
                 },
                 {
@@ -142,7 +143,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
                     "title": "Section One",
                     "children": [
                         {"inlinehtml": "<span>hello</span>"},
-                        {"usage_id": "lx_image"},
+                        {"usage_id": "lx_image", "embed": True},
                     ],
                 },
                 {
@@ -154,12 +155,13 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
         ),
         ([], ["lx_image"], [], ["lx_image"],),
         ([], ["lx_document", "lx_image"], [], ["lx_document", "lx_image"],),
-        # invalid/notfound attachments are dropped
+        # invalid/notfound attachments are kept because they may be non-xblock attachments
+        # (eg. a labxchange native asset)
         (
             [],
             ["lx_document", "does_not_exist", "lx_image"],
             [],
-            ["lx_document", "lx_image"],
+            ["lx_document", "does_not_exist", "lx_image"],
         ),
         (
             [],
