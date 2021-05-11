@@ -104,6 +104,7 @@ setup(
     ],
     entry_points={
         'xblock.v1': [
+            'lx_annotated_video = labxchange_xblocks.annotated_video_block:AnnotatedVideoBlock',
             'lx_assignment = labxchange_xblocks.assignment_block:AssignmentBlock',
             'lx_audio = labxchange_xblocks.audio_block:AudioBlock',
             'lx_case_study = labxchange_xblocks.case_study_block:CaseStudyBlock',
