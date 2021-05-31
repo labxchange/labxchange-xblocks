@@ -3,6 +3,7 @@
 Assignment XBlock.
 """
 import json
+import logging
 
 from webob import Response
 from xblock.completable import XBlockCompletionMode
@@ -16,6 +17,9 @@ from xblockutils.studio_editable import (
 )
 
 from .utils import StudentViewBlockMixin, _, xblock_specs_from_categories
+
+
+log = logging.getLogger(__name__)
 
 
 class AssignmentBlock(
@@ -55,7 +59,8 @@ class AssignmentBlock(
         for child_usage_id in self.children:  # pylint: disable=no-member
             try:
                 child_block = self.runtime.get_block(child_usage_id)
-            except XBlockParseException:
+            except Exception as err:
+                log.exception('Assignment Xblock child parsing error')
                 child_block = None
 
             if child_block:
@@ -89,7 +94,8 @@ class AssignmentBlock(
         for child_usage_id in self.children:  # pylint: disable=no-member
             try:
                 child_block = self.runtime.get_block(child_usage_id)
-            except XBlockParseException:
+            except Exception as err:
+                log.exception('Assignment Xblock child parsing error')
                 child_block = None
 
             if child_block:

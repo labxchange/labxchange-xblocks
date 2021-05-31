@@ -40,7 +40,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
         document_block = DocumentBlock(
             self.runtime_mock,
             scope_ids=document_block_keys,
-            field_data=DictFieldData({"display_name": "CS Document",}),
+            field_data=DictFieldData({"display_name": "CS Document"}),
         )
         block.children.append(document_block.scope_ids.block_type)
 
@@ -50,7 +50,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
         image_block = self._construct_xblock_mock(
             ImageBlock,
             image_block_keys,
-            field_data=DictFieldData({"display_name": "CS Image",}),
+            field_data=DictFieldData({"display_name": "CS Image"}),
         )
         block.children.append(image_block.scope_ids.block_type)
 
@@ -97,7 +97,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
         document_block = DocumentBlock(
             self.runtime_mock,
             scope_ids=document_block_keys,
-            field_data=DictFieldData({"display_name": "CS Document",}),
+            field_data=DictFieldData({"display_name": "CS Document"}),
         )
         block.children.append(document_block.scope_ids.block_type)
 
@@ -107,14 +107,15 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
         image_block = self._construct_xblock_mock(
             ImageBlock,
             image_block_keys,
-            field_data=DictFieldData({"display_name": "CS Image",}),
+            field_data=DictFieldData({"display_name": "CS Image"}),
         )
         block.children.append(image_block.scope_ids.block_type)
 
         def get_block(usage_id):
             if usage_id == "lx_document":
                 # Missing child item
-                return None
+                raise Exception('Test exception')
+
             if usage_id == "lx_image":
                 return image_block
 

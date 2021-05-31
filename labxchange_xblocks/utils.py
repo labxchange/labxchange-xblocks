@@ -82,7 +82,8 @@ class StudentViewBlockMixin(XBlockMixin):
             for child_usage_id in self.children:
                 try:
                     child_block = self.runtime.get_block(child_usage_id)
-                except XBlockParseException:
+                except Exception as err:
+                    log.exception('Xblock child parsing error')
                     child_block = None
 
                 if child_block:

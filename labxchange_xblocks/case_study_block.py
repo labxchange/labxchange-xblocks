@@ -2,6 +2,8 @@
 """
 Case Study XBlock.
 """
+import logging
+
 from xblock.completable import XBlockCompletionMode
 from xblock.core import XBlock
 from xblock.exceptions import XBlockParseException
@@ -13,6 +15,9 @@ from xblockutils.studio_editable import (
 )
 
 from .utils import StudentViewBlockMixin, _, xblock_specs_from_categories
+
+
+log = logging.getLogger(__name__)
 
 
 class CaseStudyBlock(
@@ -78,7 +83,8 @@ For example: [
         for child_usage_id in self.children:  # pylint: disable=no-member
             try:
                 child_block = self.runtime.get_block(child_usage_id)
-            except XBlockParseException:
+            except Exception as err:
+                log.exception('Case Study Xblock child parsing error')
                 child_block = None
 
             if child_block:
