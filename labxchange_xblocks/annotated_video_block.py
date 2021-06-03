@@ -51,9 +51,25 @@ class AnnotatedVideoBlock(
     #     "tags": ["help", "tag"],
     #     "link": "https://opencraft.com",
     #     "image_url": "/static/image.png",
-    #     "image_alt": "Image alternative text"
+    #     "image_alt": "Image alternative text",
+    #     "question": {
+    #       "type": "select",
+    #       "question": "The questions",
+    #       "answers": [
+    #         {
+    #           "text": "First answer",
+    #           "correct": true
+    #         }, {
+    #           "text": "Second answer",
+    #           "correct": false
+    #         }
+    #       ]
+    #     }
     #   }
-    # ]
+    #
+    # Question types:
+    #   - select
+    #   - input
     annotations = List(
         display_name=_("Annotations"),
         default=[],
