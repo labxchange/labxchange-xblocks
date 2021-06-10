@@ -75,21 +75,13 @@ class StudentViewBlockMixin(XBlockMixin):
         """
         return self._lms_view(context, 'public_view')
 
-    def _lms_view(self, context, child_view):
-        """
-        Render the view for LMS.
-        """
-        context = context or {}
-
-        fragment = Fragment()
-        render_context = self.student_view_data()
-
+    def add_children_to_fragment(self, fragment, child_view, initial_context, render_context):
         if self.has_children:
             child_blocks_data = []
             for child_usage_id in self.children:
                 child_block = self.runtime.get_block(child_usage_id)
                 if child_block:
-                    child_block_fragment = child_block.render(child_view, context)
+                    child_block_fragment = child_block.render(child_view, initial_context)
                     child_block_content = child_block_fragment.content
                     fragment.add_fragment_resources(child_block_fragment)
                     child_blocks_data.append({
@@ -98,17 +90,36 @@ class StudentViewBlockMixin(XBlockMixin):
                         'display_name': child_block.display_name,
                     })
             render_context['child_blocks'] = child_blocks_data
-
         fragment.add_content(loader.render_template(self.student_view_template, render_context))
 
-        if self.css_resource_url:
-            fragment.add_css_url(self.runtime.local_resource_url(self, self.css_resource_url))
-        
+    def add_js_resource(self, fragment):
         if self.js_resource_url and self.js_init_function:
             fragment.add_javascript_url(self.runtime.local_resource_url(self, self.js_resource_url))
             fragment.initialize_js(
                 self.js_init_function, {'user_state': self.user_state}
             )
+
+    def add_css_resource(self, fragment):
+        if self.css_resource_url:
+            fragment.add_css_url(self.runtime.local_resource_url(self, self.css_resource_url))
+
+    def _lms_view(self, context, child_view):
+        """
+        Render the view for LMS.
+        """
+        context = context or {}
+
+        fragment = Fragment()
+
+        self.add_children_to_fragment(
+            fragment,
+            child_view,
+            context,
+            self.student_view_data(),
+        )
+
+        self.add_css_resource(fragment)
+        self.add_js_resource(fragment)
         return fragment
 
     @XBlock.handler
