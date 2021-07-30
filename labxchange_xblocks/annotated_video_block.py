@@ -132,7 +132,8 @@ class AnnotatedVideoBlock(
             state.update({
                 "video_poster": settings.YOUTUBE['IMAGE_API'].format(
                     youtube_id=video_block.youtube_id_1_0,
-                )
+                ),
+                "video_youtube_id": video_block.youtube_id_1_0,
             })
 
         return Response(
