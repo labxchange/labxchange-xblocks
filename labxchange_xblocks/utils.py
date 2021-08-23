@@ -7,7 +7,7 @@ from django.template.defaulttags import register
 from web_fragments.fragment import Fragment
 from webob import Response
 from xblock.core import XBlock, XBlockMixin
-from xblock.exceptions import XBlockParseException
+from xblock.exceptions import XBlockParseException, NoSuchUsage
 from xblockutils.resources import ResourceLoader
 from xblockutils.studio_editable import NestedXBlockSpec
 

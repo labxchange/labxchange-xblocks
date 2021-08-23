@@ -6,7 +6,7 @@ import logging
 
 from xblock.completable import XBlockCompletionMode
 from xblock.core import XBlock
-from xblock.exceptions import XBlockParseException
+from xblock.exceptions import XBlockParseException, NoSuchUsage
 from xblock.fields import List, Scope, String
 from xblockutils.studio_editable import (
     StudioContainerWithNestedXBlocksMixin,
@@ -81,20 +81,42 @@ For example: [
         child_blocks = []
 
         for child_usage_id in self.children:  # pylint: disable=no-member
+            # Exceptions from get_block are not documented or standardized in the spec,
+            # so we need to use the exceptions as observed in the blockstore runtime:
+            # https://github.com/edx/edx-platform/blob/master/openedx/core/djangoapps/xblock/runtime/blockstore_runtime.py
+            # ValueError: id_reader.get_definition_id returned None
+            # TypeError: block was found, but not in a blockstore bundle
+            # XBlockParseException:  the olx failed to parse
+            # TypeError: block was found, but not in a blockstore bundle
+            # NoSuchUsage: id_reader.get_block_type failed for the definition id
             try:
                 child_block = self.runtime.get_block(child_usage_id)
             except Exception as err:
                 log.exception('Case Study Xblock child parsing error')
                 child_block = None
-
-            if child_block:
+            except (ValueError, NoSuchUsage) as err:
+                log.exception("Error getting child of XBlock with id %s.", child_usage_id)
+                child_blocks.append({
+                    "display_name": "Error",
+                    "usage_id": "child_usage_id",
+                    "content": f"Error getting child of XBlock with id {child_usage_id}: {err}.",
+                    "error": "not_found",
+                })
+            except (TypeError, XBlockParseException) as err:
+                log.exception("Error getting child of XBlock with id %s.", child_usage_id)
+                child_blocks.append({
+                    "display_name": "Error",
+                    "usage_id": "",
+                    "content": f"Error getting child of XBlock with id {child_usage_id}: {err}.",
+                    "error": "corrupt",
+                })
+            else:
                 valid_child_block_ids.add(str(child_usage_id))
-                child_block_data = {
+                child_blocks.append({
                     "usage_id": str(child_usage_id),
                     "block_type": child_block.scope_ids.block_type,
                     "display_name": child_block.display_name,
-                }
-                child_blocks.append(child_block_data)
+                })
 
         sections = []
         for section in self.sections:
@@ -108,6 +130,7 @@ For example: [
                     })
                 elif child.get("usage_id"):
                     # if we're embedding, it needs to be a valid xblock
+                    # TODO: error placeholders
                     if child.get("embed", True) and not child["usage_id"] in valid_child_block_ids:
                         continue
                     else:
