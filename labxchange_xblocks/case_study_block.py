@@ -91,24 +91,26 @@ For example: [
             # NoSuchUsage: id_reader.get_block_type failed for the definition id
             try:
                 child_block = self.runtime.get_block(child_usage_id)
-            except Exception as err:
-                log.exception('Case Study Xblock child parsing error')
-                child_block = None
             except (ValueError, NoSuchUsage) as err:
                 log.exception("Error getting child of XBlock with id %s.", child_usage_id)
                 child_blocks.append({
-                    "display_name": "Error",
-                    "usage_id": "child_usage_id",
-                    "content": f"Error getting child of XBlock with id {child_usage_id}: {err}.",
+                    "usage_id": child_usage_id,
+                    "display_name": f"Error getting child of XBlock with id {child_usage_id}: {err}.",
                     "error": "not_found",
                 })
-            except (TypeError, XBlockParseException) as err:
+            except XBlockParseException as err:
                 log.exception("Error getting child of XBlock with id %s.", child_usage_id)
                 child_blocks.append({
-                    "display_name": "Error",
-                    "usage_id": "",
-                    "content": f"Error getting child of XBlock with id {child_usage_id}: {err}.",
+                    "usage_id": child_usage_id,
+                    "display_name": f"Error getting child of XBlock with id {child_usage_id}: {err}.",
                     "error": "corrupt",
+                })
+            except Exception as err:
+                log.exception("Unknown error getting child of XBlock with id %s.", child_usage_id)
+                child_blocks.append({
+                    "usage_id": child_usage_id,
+                    "display_name": f"Unknown error getting child of XBlock with id {child_usage_id}: {err}.",
+                    "error": "unknown",
                 })
             else:
                 valid_child_block_ids.add(str(child_usage_id))
