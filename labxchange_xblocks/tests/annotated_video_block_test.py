@@ -62,7 +62,7 @@ class AnnotatedVideoBlockTestCase(XmlTest, BlockTestCaseBase):
 
         self.runtime_mock.get_block.side_effect = get_block
 
-        response = block.student_view_user_state(request=None)
+        response = block.student_view_data_and_user_state(request=None)
         data = response.json
 
         self.assertDictEqual(

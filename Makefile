@@ -40,8 +40,12 @@ coverage: clean ## generate and view HTML coverage report
 	pytest --cov-report html
 	$(BROWSER)htmlcov/index.html
 
+
 quality: ## check coding style with pycodestyle and pylint
-	tox -e quality
+	pylint labxchange_xblocks $(PROJECT_ROOT)setup.py
+	pylint --py3k labxchange_xblocks $(PROJECT_ROOT)setup.py
+	pycodestyle $(PROJECT_ROOT)labxchange_xblocks $(PROJECT_ROOT)setup.py
+	isort --check-only --diff --recursive $(PROJECT_ROOT)labxchange_xblocks $(PROJECT_ROOT)setup.py
 
 # test target:
 #
