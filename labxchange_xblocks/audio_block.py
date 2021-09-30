@@ -98,9 +98,9 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
     @property
     def assets(self):
         """ Returns every block assets from Blockstore """
-        if not hasattr(self, '_assets') or not self._assets:
-            self._assets = library_api.get_library_block_static_asset_files(
-                self.location,
+        if not hasattr(self, '_assets') or not self._assets:  # pylint: disable=access-member-before-definition
+            self._assets = library_api.get_library_block_static_asset_files(  # pylint: disable=attribute-defined-outside-init
+                self.location,  # pylint: disable=no-member
             )
         return self._assets
 
@@ -113,6 +113,8 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
         for asset in self.assets:
             if asset.path == transcript_name:
                 return asset
+
+        return None
 
     def get_sequences(self, content):
         """ Returns sequences based on asset content """
@@ -141,7 +143,7 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
         return response.content
 
     @XBlock.handler
-    def sequences(self, request, dispatch):
+    def sequences(self, request, dispatch):  # pylint: disable=unused-argument
         """ Returns sequences based on lang parameter """
         lang = request.GET.get('lang', None)
         if not lang:
@@ -158,6 +160,9 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
 
     @XBlock.handler
     def transcript(self, request, dispatch):
+        """
+        Returns a transcript from the Blockstore
+        """
         if dispatch.startswith('download'):
             lang = request.GET.get('lang', None)
             if lang:

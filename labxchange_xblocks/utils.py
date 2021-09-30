@@ -10,6 +10,12 @@ from xblock.core import XBlock, XBlockMixin
 from xblockutils.resources import ResourceLoader
 from xblockutils.studio_editable import NestedXBlockSpec
 
+try:
+    from static_replace import replace_static_urls
+    replace_urls_available = True
+except ImportError:
+    replace_urls_available = False
+
 loader = ResourceLoader(__name__)
 
 
@@ -22,6 +28,8 @@ def get_xblock_content(child_blocks, usage_id):
     for block in child_blocks:
         if block.get("usage_id") == usage_id:
             return block.get("content")
+
+    return None
 
 
 def _(text):
@@ -76,6 +84,9 @@ class StudentViewBlockMixin(XBlockMixin):
         return self._lms_view(context, 'public_view')
 
     def add_children_to_fragment(self, fragment, child_view, initial_context, render_context):
+        """
+        Add content for LMS view
+        """
         if self.has_children:
             child_blocks_data = []
             for child_usage_id in self.children:
@@ -156,9 +167,7 @@ class StudentViewBlockMixin(XBlockMixin):
         elif hasattr(self.runtime, 'course_id'):
             # edX Studio uses a different runtime for 'studio_view' than 'student_view',
             # and the 'studio_view' runtime doesn't provide the replace_urls API.
-            try:
-                from static_replace import replace_static_urls
+            if replace_urls_available:
                 url = replace_static_urls(html_str, None, course_id=self.runtime.course_id)[1:-1]
-            except ImportError:
-                pass
+
         return url
