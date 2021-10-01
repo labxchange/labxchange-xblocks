@@ -2,9 +2,9 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import ddt
+from utils import BlockTestCaseBase
 
 from labxchange_xblocks.simulation_block import SimulationBlock
-from utils import BlockTestCaseBase
 
 
 @ddt.ddt

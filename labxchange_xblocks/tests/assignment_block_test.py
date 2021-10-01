@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+from utils import BlockTestCaseBase
 from xblock.completable import XBlockCompletionMode
 from xblock.field_data import DictFieldData
 from xblock.fields import ScopeIds
@@ -9,7 +10,6 @@ from xblock.test.test_parsing import XmlTest
 from labxchange_xblocks.assignment_block import AssignmentBlock
 from labxchange_xblocks.document_block import DocumentBlock
 from labxchange_xblocks.image_block import ImageBlock
-from utils import BlockTestCaseBase
 
 
 class AssignmentBlockTestCase(XmlTest, BlockTestCaseBase):

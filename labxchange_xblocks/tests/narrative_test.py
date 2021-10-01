@@ -3,9 +3,9 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import ddt
 from six import text_type
+from utils import BlockTestCaseBase
 
 from labxchange_xblocks.narrative_block import NarrativeBlock
-from utils import BlockTestCaseBase
 
 
 @ddt.ddt
