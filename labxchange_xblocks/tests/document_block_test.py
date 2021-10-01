@@ -1,14 +1,20 @@
 # -*- coding: utf-8 -*-
+"""
+Document block tests
+"""
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import ddt
-from utils import BlockTestCaseBase
 
 from labxchange_xblocks.document_block import DocumentBlock
+from labxchange_xblocks.tests.utils import BlockTestCaseBase
 
 
 @ddt.ddt
 class DocumentBlockTestCase(BlockTestCaseBase):
+    """
+    Document block test case
+    """
 
     block_type = 'lx_document'
     block_class = DocumentBlock

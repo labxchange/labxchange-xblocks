@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Test utils
+"""
 import json
 import re
 from unittest import TestCase
@@ -11,12 +14,14 @@ from xblock.runtime import Runtime
 
 
 class BlockTestCaseBase(TestCase):
-
+    """
+    Base block test case
+    """
     block_type = None
     block_class = None
 
     def setUp(self):
-        super(BlockTestCaseBase, self).setUp()
+        super().setUp()
         self.keys = ScopeIds('a_user', self.block_type, 'def_id', 'usage_id')
         self.runtime_mock = mock.Mock(spec=Runtime)
         self.runtime_mock.construct_xblock_from_class = mock.Mock(side_effect=self._construct_xblock_mock)
@@ -42,6 +47,9 @@ class BlockTestCaseBase(TestCase):
         self.assertEqual(clean(xml_str_a), clean(xml_str_b))
 
     def _test_student_view_data(self, field_data, expected_data):
+        """
+        Assert given dicts are equal
+        """
         block = self._construct_xblock_mock(self.block_class, self.keys, field_data=DictFieldData(field_data))
 
         data = block.student_view_data(None)

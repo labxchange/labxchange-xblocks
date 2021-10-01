@@ -1,4 +1,6 @@
-from utils import BlockTestCaseBase
+"""
+Annotated video block tests
+"""
 from xblock.completable import XBlockCompletionMode
 from xblock.field_data import DictFieldData
 from xblock.fields import ScopeIds
@@ -7,10 +9,13 @@ from xmodule.tests.test_import import DummySystem
 from xmodule.video_module import VideoBlock
 
 from labxchange_xblocks.annotated_video_block import AnnotatedVideoBlock
+from labxchange_xblocks.tests.utils import BlockTestCaseBase
 
 
 class AnnotatedVideoBlockTestCase(XmlTest, BlockTestCaseBase):
-
+    """
+    Annotated block test case
+    """
     block_type = "lx_annotated_video"
     block_class = AnnotatedVideoBlock
 

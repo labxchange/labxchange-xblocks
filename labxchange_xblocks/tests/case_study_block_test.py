@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+"""
+Case study block tests
+"""
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import ddt
-from utils import BlockTestCaseBase
 from xblock.completable import XBlockCompletionMode
 from xblock.field_data import DictFieldData
 from xblock.fields import ScopeIds
@@ -11,11 +13,14 @@ from xblock.test.test_parsing import XmlTest
 from labxchange_xblocks.case_study_block import CaseStudyBlock
 from labxchange_xblocks.document_block import DocumentBlock
 from labxchange_xblocks.image_block import ImageBlock
+from labxchange_xblocks.tests.utils import BlockTestCaseBase
 
 
 @ddt.ddt
 class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
-
+    """
+    Case study block test case
+    """
     block_type = "lx_case_study"
     block_class = CaseStudyBlock
     maxDiff = None
