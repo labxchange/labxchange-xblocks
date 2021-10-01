@@ -29,11 +29,11 @@ class AudioBlockTestCase(BlockTestCaseBase):
             (
                 """<div class="audio-block-student-view unfolded">
     <div class="audio-block-embed-code-student-view">
-
+        
     </div>
-
+    
 </div>
-"""
+"""  # noqa
             ),
         ), (
             {
@@ -55,11 +55,11 @@ class AudioBlockTestCase(BlockTestCaseBase):
             (
                 """<div class="audio-block-student-view unfolded">
     <div class="audio-block-embed-code-student-view">
-        <iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/794640376&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>  # noqa: E501
+        <iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/794640376&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
     </div>
-
+    
 </div>
-"""
+"""  # noqa
             ),
         )
     )
