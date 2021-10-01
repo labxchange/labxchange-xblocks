@@ -1,17 +1,21 @@
+"""
+Annotated video block tests
+"""
 from xblock.completable import XBlockCompletionMode
 from xblock.field_data import DictFieldData
 from xblock.fields import ScopeIds
 from xblock.test.test_parsing import XmlTest
-
-from xmodule.video_module import VideoBlock
 from xmodule.tests.test_import import DummySystem
+from xmodule.video_module import VideoBlock
 
 from labxchange_xblocks.annotated_video_block import AnnotatedVideoBlock
-from utils import BlockTestCaseBase
+from labxchange_xblocks.tests.utils import BlockTestCaseBase
 
 
 class AnnotatedVideoBlockTestCase(XmlTest, BlockTestCaseBase):
-
+    """
+    Annotated block test case
+    """
     block_type = "lx_annotated_video"
     block_class = AnnotatedVideoBlock
 
@@ -62,7 +66,7 @@ class AnnotatedVideoBlockTestCase(XmlTest, BlockTestCaseBase):
 
         self.runtime_mock.get_block.side_effect = get_block
 
-        response = block.student_view_user_state(request=None)
+        response = block.student_view_data_and_user_state(request=None)
         data = response.json
 
         self.assertDictEqual(

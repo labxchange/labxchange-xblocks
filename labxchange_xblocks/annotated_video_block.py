@@ -91,7 +91,7 @@ class AnnotatedVideoBlock(
     student_view_template = 'templates/annotated_video_student_view.html'
 
     @XBlock.handler
-    def student_view_data_and_user_state(self, request, suffix=""):
+    def student_view_data_and_user_state(self, request, suffix=""):  # pylint: disable=unused-argument
         """
         Return content and settings for student view.
         """

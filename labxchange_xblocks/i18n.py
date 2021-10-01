@@ -1,3 +1,6 @@
+"""
+ISO Languages
+"""
 iso_languages = {
     "ab": {
         "name": "Abkhaz",

@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+"""
+Case study block tests
+"""
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import ddt
-
 from xblock.completable import XBlockCompletionMode
 from xblock.field_data import DictFieldData
 from xblock.fields import ScopeIds
@@ -11,12 +13,14 @@ from xblock.test.test_parsing import XmlTest
 from labxchange_xblocks.case_study_block import CaseStudyBlock
 from labxchange_xblocks.document_block import DocumentBlock
 from labxchange_xblocks.image_block import ImageBlock
-from utils import BlockTestCaseBase
+from labxchange_xblocks.tests.utils import BlockTestCaseBase
 
 
 @ddt.ddt
 class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
-
+    """
+    Case study block test case
+    """
     block_type = "lx_case_study"
     block_class = CaseStudyBlock
     maxDiff = None
@@ -40,7 +44,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
         document_block = DocumentBlock(
             self.runtime_mock,
             scope_ids=document_block_keys,
-            field_data=DictFieldData({"display_name": "CS Document",}),
+            field_data=DictFieldData({"display_name": "CS Document", }),
         )
         block.children.append(document_block.scope_ids.block_type)
 
@@ -50,7 +54,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
         image_block = self._construct_xblock_mock(
             ImageBlock,
             image_block_keys,
-            field_data=DictFieldData({"display_name": "CS Image",}),
+            field_data=DictFieldData({"display_name": "CS Image", }),
         )
         block.children.append(image_block.scope_ids.block_type)
 
@@ -119,7 +123,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
                         {"usage_id": "lx_image", "embed": True},  # dups are ok here
                     ],
                 },
-                {"title": "Section Two", "children": [{"inlinehtml": ""},],},
+                {"title": "Section Two", "children": [{"inlinehtml": ""}, ], },
             ],
             [],
         ),
@@ -134,7 +138,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
                 },
                 {
                     "title": "Section Two",
-                    "children": [{"inlinehtml": "<p>One</p><p>Two</p>"},],
+                    "children": [{"inlinehtml": "<p>One</p><p>Two</p>"}, ],
                 },
             ],
             [],
@@ -148,7 +152,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
                 },
                 {
                     "title": "Section Two",
-                    "children": [{"inlinehtml": "<p>One</p><p>Two</p>"},],
+                    "children": [{"inlinehtml": "<p>One</p><p>Two</p>"}, ],
                 },
             ],
             [],
@@ -193,7 +197,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
         document_block = DocumentBlock(
             self.runtime_mock,
             scope_ids=document_block_keys,
-            field_data=DictFieldData({"display_name": "CS Document",}),
+            field_data=DictFieldData({"display_name": "CS Document", }),
         )
         block.children.append(document_block.scope_ids.block_type)
 
@@ -203,7 +207,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
         image_block = self._construct_xblock_mock(
             ImageBlock,
             image_block_keys,
-            field_data=DictFieldData({"display_name": "CS Image",}),
+            field_data=DictFieldData({"display_name": "CS Image", }),
         )
         block.children.append(image_block.scope_ids.block_type)
 
@@ -254,7 +258,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
         document_block = DocumentBlock(
             self.runtime_mock,
             scope_ids=document_block_keys,
-            field_data=DictFieldData({"display_name": "CS Document",}),
+            field_data=DictFieldData({"display_name": "CS Document", }),
         )
         block.children.append(document_block.scope_ids.block_type)
 
@@ -264,7 +268,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
         image_block = self._construct_xblock_mock(
             ImageBlock,
             image_block_keys,
-            field_data=DictFieldData({"display_name": "CS Image",}),
+            field_data=DictFieldData({"display_name": "CS Image", }),
         )
         block.children.append(image_block.scope_ids.block_type)
 

@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Assignment block tests
+"""
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from xblock.completable import XBlockCompletionMode
@@ -9,11 +12,13 @@ from xblock.test.test_parsing import XmlTest
 from labxchange_xblocks.assignment_block import AssignmentBlock
 from labxchange_xblocks.document_block import DocumentBlock
 from labxchange_xblocks.image_block import ImageBlock
-from utils import BlockTestCaseBase
+from labxchange_xblocks.tests.utils import BlockTestCaseBase
 
 
 class AssignmentBlockTestCase(XmlTest, BlockTestCaseBase):
-
+    """
+    Assignment block test case
+    """
     block_type = 'lx_assignment'
     block_class = AssignmentBlock
 

@@ -1,20 +1,27 @@
 # -*- coding: utf-8 -*-
+"""
+Audio block tests
+"""
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import ddt
-
 from xblock.field_data import DictFieldData
+
 from labxchange_xblocks.audio_block import AudioBlock
-from utils import BlockTestCaseBase
+from labxchange_xblocks.tests.utils import BlockTestCaseBase
+
+# pylint: disable=line-too-long
+# pylint: disable=trailing-whitespace
 
 
 @ddt.ddt
 class AudioBlockTestCase(BlockTestCaseBase):
-
+    """
+    Audio block test case
+    """
     block_type = 'lx_audio'
     block_class = AudioBlock
     maxDiff = None
-
     data = (
         (
             {},
@@ -24,7 +31,7 @@ class AudioBlockTestCase(BlockTestCaseBase):
                 'options': [],
                 'sequences': [],
                 'transcripts': {},
-                'user_state': { 'current_language': None },
+                'user_state': {'current_language': None},
             },
             (
                 """<div class="audio-block-student-view unfolded">
@@ -33,7 +40,7 @@ class AudioBlockTestCase(BlockTestCaseBase):
     </div>
     
 </div>
-"""
+"""  # noqa
             ),
         ), (
             {
@@ -42,7 +49,7 @@ class AudioBlockTestCase(BlockTestCaseBase):
                 'options': [],
                 'sequences': [],
                 'transcripts': {},
-                'user_state': { 'current_language': None },
+                'user_state': {'current_language': None},
             },
             {
                 'display_name': 'A very cool track',
@@ -50,7 +57,7 @@ class AudioBlockTestCase(BlockTestCaseBase):
                 'options': [],
                 'sequences': [],
                 'transcripts': {},
-                'user_state': { 'current_language': None },
+                'user_state': {'current_language': None},
             },
             (
                 """<div class="audio-block-student-view unfolded">
@@ -59,7 +66,7 @@ class AudioBlockTestCase(BlockTestCaseBase):
     </div>
     
 </div>
-"""
+"""  # noqa
             ),
         )
     )

@@ -40,8 +40,12 @@ coverage: clean ## generate and view HTML coverage report
 	pytest --cov-report html
 	$(BROWSER)htmlcov/index.html
 
+
 quality: ## check coding style with pycodestyle and pylint
-	tox -e quality
+	pylint labxchange_xblocks $(PROJECT_ROOT)setup.py
+	pylint --py3k labxchange_xblocks $(PROJECT_ROOT)setup.py
+	pycodestyle $(PROJECT_ROOT)labxchange_xblocks $(PROJECT_ROOT)setup.py
+	isort --check-only --diff --recursive $(PROJECT_ROOT)labxchange_xblocks $(PROJECT_ROOT)setup.py
 
 # test target:
 #
@@ -51,7 +55,7 @@ quality: ## check coding style with pycodestyle and pylint
 # run.
 test: clean
 	mkdir -p test_root
-	python -m pytest --ds=lms.envs.test --no-cov --nomigrations $(PROJECT_ROOT)labxchange_xblocks/tests/
+	python -m pytest --disable-pytest-warnings --ds=lms.envs.test --no-cov --nomigrations $(PROJECT_ROOT)labxchange_xblocks/tests/
 
 diff_cover: test ## find diff lines that need test coverage
 	diff-cover coverage.xml

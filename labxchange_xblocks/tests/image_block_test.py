@@ -1,15 +1,20 @@
 # -*- coding: utf-8 -*-
+"""
+Image block tests
+"""
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import ddt
 
 from labxchange_xblocks.image_block import ImageBlock
-from utils import BlockTestCaseBase
+from labxchange_xblocks.tests.utils import BlockTestCaseBase
 
 
 @ddt.ddt
 class ImageBlockTestCase(BlockTestCaseBase):
-
+    """
+    Image block test case
+    """
     block_type = 'lx_image'
     block_class = ImageBlock
 

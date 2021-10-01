@@ -1,16 +1,21 @@
 # -*- coding: utf-8 -*-
+"""
+Narrative block tests
+"""
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import ddt
 from six import text_type
 
 from labxchange_xblocks.narrative_block import NarrativeBlock
-from utils import BlockTestCaseBase
+from labxchange_xblocks.tests.utils import BlockTestCaseBase
 
 
 @ddt.ddt
 class NarrativeBlockTestCase(BlockTestCaseBase):
-
+    """
+    Narrative block test case
+    """
     block_type = 'lx_narrative'
     block_class = NarrativeBlock
 

@@ -11,7 +11,7 @@ from xblockutils.studio_editable import (
     XBlockWithPreviewMixin
 )
 
-from .utils import StudentViewBlockMixin, _, xblock_specs_from_categories
+from .utils import StudentViewBlockMixin, _
 
 
 class CaseStudyBlock(
@@ -99,11 +99,11 @@ For example: [
                     # if we're embedding, it needs to be a valid xblock
                     if child.get("embed", True) and not child["usage_id"] in valid_child_block_ids:
                         continue
-                    else:
-                        children.append({
-                            "usage_id": child["usage_id"],
-                            "embed": child.get("embed", True),
-                        })
+
+                    children.append({
+                        "usage_id": child["usage_id"],
+                        "embed": child.get("embed", True),
+                    })
 
             sections.append({
                 "title": section.get("title", ""),

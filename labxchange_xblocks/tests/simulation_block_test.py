@@ -1,15 +1,20 @@
 # -*- coding: utf-8 -*-
+"""
+Simulation block tests
+"""
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import ddt
 
 from labxchange_xblocks.simulation_block import SimulationBlock
-from utils import BlockTestCaseBase
+from labxchange_xblocks.tests.utils import BlockTestCaseBase
 
 
 @ddt.ddt
 class SimulationBlockTestCase(BlockTestCaseBase):
-
+    """
+    Simulation block test case
+    """
     block_type = 'lx_simulation'
     block_class = SimulationBlock
 

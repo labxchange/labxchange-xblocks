@@ -14,6 +14,26 @@ Overview
 6. Story in Science XBlock (stories from https://storiesinscience.org)
 7. Audio XBlock (renders embed codes from sites such as, but not limited to, SoundCloud or Sticher)
 
+
+Installation on Devstack
+_________________________
+
+.. code-block::
+
+    make studio-shell
+    cd /edx/src
+    git clone https://github.com/open-craft/labxchange-xblocks.git
+    pip install -e /edx/src/labxchange-xblocks
+
+Testing on Devstack
+_________________________
+
+.. code-block::
+
+    make studio-shell
+    make -f /edx/src/labxchange-xblocks/Makefile validate
+
+
 License
 -------
 
