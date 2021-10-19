@@ -17,6 +17,15 @@ from .i18n import iso_languages
 from .utils import StudentViewBlockMixin, _
 
 
+def srt_to_html(srt_string):
+    """
+    Takes an str formatted string, and returns marked up html.
+    Strips all timestamps; this is to simply render it neatly.
+    """
+    sequences = pysrt.from_string(srt_string.decode('utf-8'))
+    return "\n".join(f"<p>{x.text}</p>" for x in sequences)
+
+
 class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
     """
     XBlock for audio embedding.
@@ -38,7 +47,13 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
         scope=Scope.content,
     )
 
-    # Data format: {'de': 'german_translation', 'uk': 'ukrainian_translation'}
+    # Data format: {
+    #   'de': 'german_translation.srt',
+    #   'uk': 'ukrainian_translation.srt',
+    #   'au': {
+    #     'type': 'inlinehtml',
+    #     'content': '<p>Welcome to the show</p> ...',
+    # }
     transcripts = Dict(
         help=_('Add transcripts in different languages.'
                ' Click below to specify a language and upload an .srt transcript file for that language.'),
@@ -63,23 +78,31 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
         Return content and settings for student view.
         """
         options = []
-        sequences = []
+        transcripts = {}
         for lang in self.transcripts.keys():
             current_asset = self.get_transcript_asset(lang)
             options.append({
                 'lang': lang,
                 'language': iso_languages.get(lang),
-                'url': current_asset.url if current_asset else ''
             })
-            if current_asset:
-                transcript = self.get_transcript_content(current_asset.url)
-                sequences = self.get_sequences(transcript)
+
+            # Convert legacy srt subtitles on the fly.
+            # These will be permanently saved when the client saves.
+            value = self.transcripts[lang]
+            if current_asset and isinstance(value, str):
+                content = self.get_transcript_content(current_asset.url)
+                transcripts[lang] = {
+                    "type": "inlinehtml",
+                    "content": srt_to_html(content),
+                }
+            else:
+                transcripts[lang] = value
+
         return {
             'display_name': self.display_name,
             'embed_code': self.embed_code,
             'options': options,
-            'transcripts': self.transcripts,
-            'sequences': sequences,
+            'transcripts': transcripts,
             'user_state': self.user_state,
         }
 
@@ -114,27 +137,6 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
 
         return None
 
-    def get_sequences(self, content):
-        """ Returns sequences based on asset content """
-        sequences = pysrt.from_string(content.decode('utf-8'))
-        return [
-            {
-                'text': sequence.text,
-                'start': {
-                    'hours': str(sequence.start.hours).zfill(2),
-                    'minutes': str(sequence.start.minutes).zfill(2),
-                    'seconds': str(sequence.start.seconds).zfill(2),
-                    'milliseconds': sequence.start.milliseconds,
-                },
-                'end': {
-                    'hours': str(sequence.end.hours).zfill(2),
-                    'minutes': str(sequence.end.minutes).zfill(2),
-                    'seconds': str(sequence.end.seconds).zfill(2),
-                    'milliseconds': sequence.end.milliseconds,
-
-                },
-            } for sequence in sequences]
-
     def get_transcript_content(self, url):
         """ Retrieves and returns transcript content from Blockstore """
         response = requests.get(url)
@@ -142,19 +144,38 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
 
     @XBlock.handler
     def sequences(self, request, dispatch):  # pylint: disable=unused-argument
-        """ Returns sequences based on lang parameter """
+        """
+        Returns sequences based on lang parameter.
+        This is used by the frontend audio-xblock.js to render the srt content in audio_student_view.html.
+        NOTE: this will be removed once we begin rendering the block in the labxchange frontend (in LX-2243).
+        """
         lang = request.GET.get('lang', None)
         if not lang:
             lang = self.user_state.get('current_language')
 
         lang = lang.rstrip('/')
-        asset = self.get_transcript_asset(lang)
-        content = self.get_transcript_content(asset.url)
-        return Response(
-            json.dumps(self.get_sequences(content)),
-            headerlist=[('Content-Type', 'application/json')],
-            charset='utf8'
-        )
+        value = self.transcripts.get(lang)
+
+        if isinstance(value, str):
+            # value is file name
+            asset = self.get_transcript_asset(lang)
+            if asset:
+                content = self.get_transcript_content(asset.url)
+                return Response(
+                    json.dumps({"content": srt_to_html(content)}),
+                    headerlist=[('Content-Type', 'application/json')],
+                    charset='utf8'
+                )
+        else:
+            # `value` is of shape {"type": "inlinehtml", "content": "<p>content</p>"}
+            if value["type"] == "inlinehtml":
+                return Response(
+                    json.dumps({"content": value["content"]}),
+                    headerlist=[('Content-Type', 'application/json')],
+                    charset='utf8'
+                )
+
+        return Response(status=404)
 
     @XBlock.handler
     def transcript(self, request, dispatch):

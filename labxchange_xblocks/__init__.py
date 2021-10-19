@@ -4,7 +4,7 @@ XBlocks developed for the LabXchange project.
 
 from __future__ import absolute_import, unicode_literals
 
-__version__ = '0.8.2'
+__version__ = '0.8.3'
 
 
 def one():
