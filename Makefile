@@ -55,7 +55,7 @@ quality: ## check coding style with pycodestyle and pylint
 # run.
 test: clean
 	mkdir -p test_root
-	python -m pytest --disable-pytest-warnings --ds=lms.envs.test --no-cov --nomigrations $(PROJECT_ROOT)labxchange_xblocks/tests/
+	python -m pytest -vvv -s --disable-pytest-warnings --ds=lms.envs.test --no-cov --nomigrations $(PROJECT_ROOT)labxchange_xblocks/tests/
 
 diff_cover: test ## find diff lines that need test coverage
 	diff-cover coverage.xml
