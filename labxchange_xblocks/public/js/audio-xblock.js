@@ -1,3 +1,4 @@
+// TODO: delete this once https://tasks.opencraft.com/browse/LX-2243 is complete
 function LXAudioXBlock(runtime, element, init_args) {
     'use strict';
 
@@ -29,19 +30,7 @@ function LXAudioXBlock(runtime, element, init_args) {
             url: this.getSequencesUrl + '?lang=' + lang,
             method: 'GET',
         }).done(function(data) {
-            sequencesElement.html('');
-            data.map(function(sequence, index) {
-                sequencesElement.append(
-                    `<div class="audio-block-sequences-line-student-view ${index == 0 ? 'first-line' : ''}">` +
-                        '<div class="audio-block-sequences-start-student-view">' +
-                            `${sequence.start.hours}:${sequence.start.minutes}:${sequence.start.seconds}` +
-                        '</div>' +
-                        '<div class="audio-block-sequences-text-student-view">' +
-                            `${sequence.text}` +
-                        '</div>' +
-                    '</div>'
-                );
-            })
+            sequencesElement.html(data.content);
         });
     }
 
