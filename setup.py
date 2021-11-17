@@ -116,6 +116,7 @@ setup(
             'lx_document = labxchange_xblocks.document_block:DocumentBlock',
             'lx_image = labxchange_xblocks.image_block:ImageBlock',
             'lx_narrative = labxchange_xblocks.narrative_block:NarrativeBlock',
+            'lx_question = labxchange_xblocks.question_block:QuestionBlock',
             'lx_simulation = labxchange_xblocks.simulation_block:SimulationBlock',
             'lx_teaching_guide = labxchange_xblocks.case_study_block:CaseStudyBlock',
         ]
