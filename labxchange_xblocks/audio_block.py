@@ -69,7 +69,6 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
     )
 
     student_view_template = 'templates/audio_student_view.html'
-    css_resource_url = 'public/css/audio-xblock.css'
 
     def student_view_data(self, context=None):
         """
@@ -145,7 +144,8 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
         self, request, suffix=""
     ):  # pylint: disable=unused-argument
         """
-        Return JSON representation of the block with enough data to render the student view
+        Return JSON representation of the block with enough data to render the student view.
+        Also, we can use this endpoint to render the view somewhere else
         """
         state = self.student_view_data()
         return Response(
