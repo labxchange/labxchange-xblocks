@@ -49,7 +49,7 @@ class ImageBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
         scope=Scope.content,
     )
 
-    extendDesc = String(
+    extended_desc = String(
         display_name=_('Extended Description'),
         help=_('Extended description for the image. Optional.'),
         default='',
