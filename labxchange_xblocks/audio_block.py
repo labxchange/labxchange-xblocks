@@ -143,6 +143,19 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
         return response.content
 
     @XBlock.handler
+    def student_view_user_state(
+        self, request, suffix=""
+    ):  # pylint: disable=unused-argument
+        """
+        Return JSON representation of the block with enough data to render the student view.
+        Also, we can use this endpoint to render the view somewhere else
+        """
+        state = self.student_view_data()
+        return Response(
+            json.dumps(state), content_type="application/json", charset="UTF-8"
+        )
+
+    @XBlock.handler
     def sequences(self, request, dispatch):  # pylint: disable=unused-argument
         """
         Returns sequences based on lang parameter.
