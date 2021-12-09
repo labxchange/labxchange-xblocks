@@ -49,12 +49,20 @@ class ImageBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
         scope=Scope.content,
     )
 
+    extended_desc = String(
+        display_name=_('Extended Description'),
+        help=_('Extended description for the image. Optional.'),
+        default='',
+        scope=Scope.content,
+    )
+
     editable_fields = (
         'display_name',
         'alt_text',
         'image_url',
         'caption',
         'citation',
+        'extended_desc',
     )
 
     student_view_template = 'templates/image_student_view.html'
@@ -70,4 +78,5 @@ class ImageBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
             'image_url': self.expand_static_url(self.image_url),
             'caption': self.caption,
             'citation': self.citation,
+            'extended_desc': self.extended_desc,
         }
