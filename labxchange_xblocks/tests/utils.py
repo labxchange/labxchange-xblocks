@@ -27,6 +27,7 @@ class BlockTestCaseBase(TestCase):
         self.runtime_mock.construct_xblock_from_class = mock.Mock(side_effect=self._construct_xblock_mock)
         self.runtime_mock.local_resource_url = lambda self, u: u
         self.runtime_mock.get_policy = mock.Mock(return_value={})
+        self.runtime_mock.handler_url = lambda self, u, query: f'{u}/{query}'
 
     def _construct_xblock_mock(self, cls, keys, field_data=None):
         """

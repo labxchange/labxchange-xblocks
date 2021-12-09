@@ -119,6 +119,7 @@ setup(
             'lx_question = labxchange_xblocks.question_block:QuestionBlock',
             'lx_simulation = labxchange_xblocks.simulation_block:SimulationBlock',
             'lx_teaching_guide = labxchange_xblocks.case_study_block:CaseStudyBlock',
+            'lx_video = labxchange_xblocks.video_block:VideoBlock',
         ]
     },
 )
