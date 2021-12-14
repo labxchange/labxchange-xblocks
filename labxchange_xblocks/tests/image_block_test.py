@@ -29,6 +29,7 @@ class ImageBlockTestCase(BlockTestCaseBase):
                 'image_url': '',
                 'caption': '',
                 'citation': '',
+                'extended_desc': '',
             },
             # And this HTML:
             (
@@ -44,6 +45,7 @@ class ImageBlockTestCase(BlockTestCaseBase):
                 'image_url': 'https://cdn.org/moon.jpeg',
                 'caption': 'Fig. 1: Map of the moon - چاند کا نقشہ',
                 'citation': 'Courtesy NASA Lunar Reconnaissance Orbiter science team',
+                'extended_desc': 'I am the extended description',
             },
             # Then we expect this student_view_data output:
             {
@@ -52,6 +54,7 @@ class ImageBlockTestCase(BlockTestCaseBase):
                 'image_url': 'https://cdn.org/moon.jpeg',
                 'caption': 'Fig. 1: Map of the moon - چاند کا نقشہ',
                 'citation': 'Courtesy NASA Lunar Reconnaissance Orbiter science team',
+                'extended_desc': 'I am the extended description',
             },
             # And this HTML:
             (
