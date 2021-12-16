@@ -1,7 +1,0 @@
-.audio-block-student-view iframe {
-  border: none;
-}
-
-button.audio-block-transcript-toggle::after {
-  content: '+';
-}

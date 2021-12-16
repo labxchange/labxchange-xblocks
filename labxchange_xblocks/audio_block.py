@@ -69,9 +69,6 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
     )
 
     student_view_template = 'templates/audio_student_view.html'
-    css_resource_url = 'public/css/audio-xblock.css'
-    js_resource_url = 'public/js/audio-xblock.js'
-    js_init_function = 'LXAudioXBlock'
 
     def student_view_data(self, context=None):
         """
