@@ -1,9 +1,7 @@
 """
 HTML XBlock.
 """
-import re
 from lxml import etree
-
 from xblock.core import XBlock
 from xblock.fields import Scope, String
 
@@ -47,15 +45,4 @@ class HtmlBlock(XBlock, StudentViewBlockMixin):
 
     def student_view_data(self, context=None):
         """Return all data required to render or edit the xblock"""
-        return {"html": self.get_html()}
-
-    def get_html(self):
-        """Returns block HTML content."""
-        data = self.data
-        if data:
-            if getattr(self.runtime, "anonymous_student_id", None):
-                data = data.replace("%%USER_ID%%", self.runtime.anonymous_student_id)
-            data = data.replace(
-                "%%COURSE_ID%%", str(self.scope_ids.usage_id.context_key)
-            )
-        return data
+        return {"html": self.data}
