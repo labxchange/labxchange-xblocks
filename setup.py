@@ -120,6 +120,7 @@ setup(
             'lx_simulation = labxchange_xblocks.simulation_block:SimulationBlock',
             'lx_teaching_guide = labxchange_xblocks.case_study_block:CaseStudyBlock',
             'lx_video = labxchange_xblocks.video_block:VideoBlock',
+            'lx_html = labxchange_xblocks.html_block:HtmlBlock',
         ]
     },
 )
