@@ -9,13 +9,32 @@ from webob import Response
 from xblock.completable import XBlockCompletionMode
 from xblock.core import XBlock
 from xblock.fields import List, Scope, String
-from xblockutils.studio_editable import (
-    StudioContainerWithNestedXBlocksMixin,
-    StudioEditableXBlockMixin,
-    XBlockWithPreviewMixin
-)
 
 from .utils import StudentViewBlockMixin, _, xblock_specs_from_categories
+
+try:
+    from xblockutils.studio_editable import (
+        StudioContainerWithNestedXBlocksMixin,
+        StudioEditableXBlockMixin,
+        XBlockWithPreviewMixin
+    )
+except ImportError:
+    class StudioContainerWithNestedXBlocksMixin:
+        """
+        Dummy class to use when running outside of Open edX.
+        """
+
+
+    class StudioEditableXBlockMixin:
+        """
+        Dummy class to use when running outside of Open edX.
+        """
+
+
+    class XBlockWithPreviewMixin:
+        """
+        Dummy class to use when running outside of Open edX.
+        """
 
 
 class AnnotatedVideoBlock(

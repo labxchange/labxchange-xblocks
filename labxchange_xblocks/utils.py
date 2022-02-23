@@ -2,21 +2,23 @@
 Helper code.
 """
 import json
+import pkg_resources
 
 from django.template.defaulttags import register
+from django.template import Context, Template, Engine
+from django.template.backends.django import get_installed_libraries
+
 from web_fragments.fragment import Fragment
 from webob import Response
 from xblock.core import XBlock, XBlockMixin
-from xblockutils.resources import ResourceLoader
-from xblockutils.studio_editable import NestedXBlockSpec
+
+module_name = __name__
 
 try:
     from static_replace import replace_static_urls
     replace_urls_available = True
 except ImportError:
     replace_urls_available = False
-
-loader = ResourceLoader(__name__)
 
 
 @register.filter
@@ -41,11 +43,10 @@ def _(text):
 
 def xblock_specs_from_categories(categories):
     """
-    Return NestedXBlockSpecs for available XBlocks from categories.
+    Return XBlock classes for available XBlocks from categories.
     """
     return (
-        NestedXBlockSpec(class_, category=category, label=class_.display_name.default)
-        for category, class_ in XBlock.load_classes() if category in categories
+        class_ for category, class_ in XBlock.load_classes() if category in categories
     )
 
 
@@ -101,7 +102,7 @@ class StudentViewBlockMixin(XBlockMixin):
                         'display_name': child_block.display_name,
                     })
             render_context['child_blocks'] = child_blocks_data
-        fragment.add_content(loader.render_template(self.student_view_template, render_context))
+        fragment.add_content(self._render_django_template(self.student_view_template, render_context))
 
     def add_js_resource(self, fragment):
         if self.js_resource_url and self.js_init_function:
@@ -113,6 +114,21 @@ class StudentViewBlockMixin(XBlockMixin):
     def add_css_resource(self, fragment):
         if self.css_resource_url:
             fragment.add_css_url(self.runtime.local_resource_url(self, self.css_resource_url))
+
+    def _render_django_template(self, template_path, context=None, i18n_service=None):
+        """
+        Evaluate a django template by resource path, applying the provided context.
+        """
+        template_str = self._load_unicode_template(template_path)
+        template = Template(template_str)
+        return template.render(Context(context or {}))
+
+    def _load_unicode_template(self, resource_path):
+        """
+        Gets the content of a resource as UTF8
+        """
+        resource_content = pkg_resources.resource_string(module_name, resource_path)
+        return resource_content.decode('utf-8')
 
     def _lms_view(self, context, child_view):
         """

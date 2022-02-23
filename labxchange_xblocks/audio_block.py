@@ -7,14 +7,26 @@ import json
 import pysrt
 import requests
 import six
-from openedx.core.djangoapps.content_libraries import api as library_api
 from webob import Response
 from xblock.core import XBlock
 from xblock.fields import Dict, Scope, String
-from xblockutils.studio_editable import StudioEditableXBlockMixin
 
 from .i18n import iso_languages
 from .utils import StudentViewBlockMixin, _
+
+try:
+    from openedx.core.djangoapps.content_libraries import api as library_api
+    USE_LIBRARY_API = True
+except ModuleNotFoundError:
+    USE_LIBRARY_API = False
+
+try:
+    from xblockutils.studio_editable import StudioEditableXBlockMixin
+except ImportError:
+    class StudioEditableXBlockMixin:
+        """
+        Dummy class to use when running outside of Open edX.
+        """
 
 
 def srt_to_html(srt_string):
@@ -26,6 +38,7 @@ def srt_to_html(srt_string):
     return "\n".join(f"<p>{x.text}</p>" for x in sequences)
 
 
+@XBlock.wants('blockstore')
 class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
     """
     XBlock for audio embedding.
@@ -69,6 +82,13 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
     )
 
     student_view_template = 'templates/audio_student_view.html'
+
+    def __init__(self, *args, **kwargs):
+        """
+        Create an instance of the Audio XBlock.
+        """
+        super().__init__(*args, **kwargs)
+        self._assets = None
 
     def student_view_data(self, context=None):
         """
@@ -116,10 +136,16 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
     @property
     def assets(self):
         """ Returns every block assets from Blockstore """
-        if not hasattr(self, '_assets') or not self._assets:  # pylint: disable=access-member-before-definition
-            self._assets = library_api.get_library_block_static_asset_files(  # pylint: disable=attribute-defined-outside-init,   # noqa: E501
-                self.location,  # pylint: disable=no-member
-            )
+        if self._assets is None:
+            self._assets = []
+            if USE_LIBRARY_API:
+                self._assets = library_api.get_library_block_static_asset_files(self.scope_ids.usage_id)
+            else:
+                blockstore_service = self.runtime.service(self, 'blockstore')
+                if blockstore_service:
+                    self._assets = blockstore_service.get_library_block_static_asset_files(
+                        self.scope_ids.usage_id,
+                    )
         return self._assets
 
     def get_transcript_asset(self, lang):
