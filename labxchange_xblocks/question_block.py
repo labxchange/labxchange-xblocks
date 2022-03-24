@@ -6,6 +6,7 @@ import html
 import json
 from typing import List, Optional
 
+import lxml
 from lxml import etree
 from webob import Response
 from xblock import fields
@@ -155,6 +156,7 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
         This should also include feedback comments based on the student answer.
         """
         t = self.question_data["type"]
+        data = {}
         if t == "stringresponse":
             data = {
                 "type": t,
@@ -171,9 +173,6 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
             # only show answers if student has no attempts remaining
             if not self._has_attempts():
                 data["answer"] = self.question_data["answers"][0]
-
-            return data
-
         elif t == "choiceresponse":
             selected = self.student_answer.get("selected")
             has_answer = selected is not None
@@ -184,7 +183,7 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
                 group_key = " ".join(map(str, sorted(selected)))
                 comment = self.question_data["comments"].get(group_key, "")
 
-            return {
+            data = {
                 "type": t,
                 "question": self.question_data["question"],
                 "choices": [
@@ -207,11 +206,10 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
                 "comment": comment,
                 "studentAnswer": self.student_answer,
             }
-
         elif t == "optionresponse":
             answer_index = self.student_answer.get("index", -1)
             options = self.question_data["options"]
-            return {
+            data = {
                 "type": t,
                 "question": self.question_data["question"],
                 "display": self.question_data["display"],
@@ -225,6 +223,19 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
                 ],
                 "studentAnswer": self.student_answer,
             }
+
+        def rewrite_link(link):
+            if link.startswith('/static'):
+                return self.expand_static_url(link)
+            return link
+
+        question = data.get('question')
+        if question:
+            question = lxml.html.fromstring(question)
+            question.rewrite_links(rewrite_link)
+            data['question'] = lxml.html.tostring(question).decode('utf-8')
+
+        return data
 
     def _is_correct(self) -> Optional[bool]:
         """
@@ -511,7 +522,7 @@ def parse_option_from_node(node: "xmlnode") -> dict:
       }
     """
     option = {
-        "content": html.unescape(node.text.strip()),
+        "content": html.unescape((node.text or "").strip()),
         "correct": node.attrib.get("correct", "false") == "true",
         "comment": "",
     }
