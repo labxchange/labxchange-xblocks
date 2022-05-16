@@ -7,10 +7,6 @@ import json
 import logging
 import os
 
-# TODO: Once blockstore will be part of LabXchange,
-# TODO: these "openedx" imports will be done directly fromn blockstore app
-from openedx.core.djangolib import blockstore_cache
-from openedx.core.lib import blockstore_api
 from webob import Response
 from webob.multidict import MultiDict
 from xblock import fields
@@ -20,6 +16,14 @@ from xblock.fields import Scope
 from .exceptions import NotFoundError
 from .fields import RelativeTime
 from .utils import StudentViewBlockMixin, _
+
+try:
+    from openedx.core.djangolib import blockstore_cache
+    from openedx.core.lib import blockstore_api
+    USE_BLOCKSTORE_CACHE = True
+except ModuleNotFoundError:
+    # We'll try to use the blockstore service instead.
+    USE_BLOCKSTORE_CACHE = False
 
 log = logging.getLogger(__name__)
 
@@ -37,6 +41,7 @@ class Transcript:
     }
 
 
+@XBlock.wants('blockstore')
 class VideoBlock(XBlock, StudentViewBlockMixin):
     """
     XBlock to store a video.
@@ -202,18 +207,37 @@ class VideoBlock(XBlock, StudentViewBlockMixin):
             raise NotFoundError(
                 "Video XBlocks in Blockstore only support .srt transcript files."
             )
-        bundle_uuid = self.scope_ids.def_id.bundle_uuid
-        path = self.scope_ids.def_id.olx_path.rpartition("/")[0] + "/static/" + filename
-        bundle_version = self.scope_ids.def_id.bundle_version
-        draft_name = self.scope_ids.def_id.draft_name
-        try:
-            content_binary = blockstore_cache.get_bundle_file_data_with_cache(
-                bundle_uuid, path, bundle_version, draft_name
-            )
-        except blockstore_api.BundleFileNotFound as err:
-            raise NotFoundError(
-                f"Transcript file '{path}' missing for video XBlock {self.scope_ids.usage_id}"
-            ) from err
+
+        if USE_BLOCKSTORE_CACHE:
+            bundle_uuid = self.scope_ids.def_id.bundle_uuid
+            path = self.scope_ids.def_id.olx_path.rpartition("/")[0] + "/static/" + filename
+            bundle_version = self.scope_ids.def_id.bundle_version
+            draft_name = self.scope_ids.def_id.draft_name
+            try:
+                content_binary = blockstore_cache.get_bundle_file_data_with_cache(
+                    bundle_uuid, path, bundle_version, draft_name
+                )
+
+            except blockstore_api.BundleFileNotFound as err:
+                raise NotFoundError(
+                    f"Transcript file '{path}' missing for video XBlock {self.scope_ids.usage_id}"
+                ) from err
+        else:
+            blockstore_service = self.runtime.service(self, 'blockstore')
+            if blockstore_service:
+                try:
+                    content_binary = blockstore_service.get_library_block_asset_file_content(
+                        self.scope_ids.usage_id, filename,
+                    )
+                except Exception as err:  # pylint: disable=broad-except
+                    raise NotFoundError(
+                        f"Transcript file '{path}' missing for video XBlock {self.scope_ids.usage_id}"
+                    ) from err
+            else:
+                raise NotFoundError(
+                    "Unable to load transcript file '{path}' for video XBlock {self.scope_ids.usage_id}: "
+                    "blockstore service not available"
+                )
         # Now convert the transcript data to the requested format:
         filename_no_extension = os.path.splitext(filename)[0]
         output_filename = f"{filename_no_extension}.{output_format}"

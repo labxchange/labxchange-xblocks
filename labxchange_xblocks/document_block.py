@@ -4,9 +4,19 @@ Document XBlock.
 """
 from xblock.core import XBlock
 from xblock.fields import Scope, String
-from xblockutils.studio_editable import StudioEditableXBlockMixin
 
 from .utils import StudentViewBlockMixin, _
+
+
+try:
+    from xblockutils.studio_editable import (
+        StudioEditableXBlockMixin,
+    )
+except ImportError:
+    class StudioEditableXBlockMixin:
+        """
+        Dummy class to use when running outside of Open edX.
+        """
 
 
 class DocumentBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):

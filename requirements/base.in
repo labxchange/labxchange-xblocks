@@ -10,3 +10,4 @@
 # If any requirements in addition to those installed by Open edX are needed,
 # specify them here (or in quality.in, test.in, etc.):
 # Core requirements for using this application
+pysrt                               # Support for SubRip subtitle files, used in the video

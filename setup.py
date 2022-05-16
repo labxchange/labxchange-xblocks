@@ -97,7 +97,7 @@ setup(
     package_data=package_data('labxchange_xblocks', ['static', 'public']),
     include_package_data=True,
     install_requires=load_requirements('requirements/base.in'),
-    license="AGPL 3.0",
+    license="Apache 2.0",
     zip_safe=False,
     classifiers=[
         'License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)',
