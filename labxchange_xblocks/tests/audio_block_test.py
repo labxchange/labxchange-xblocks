@@ -93,7 +93,6 @@ class AudioBlockTestCase(BlockTestCaseBase):
                     'type': 'inlinehtml',
                     'content': '<p>Welcome to the show</p>',
                 },
-                'fr': 'transcript-fr.srt',
             },
             'user_state': {'current_language': None},
         }
@@ -127,7 +126,6 @@ Bienvenue !
         block = self._construct_xblock_mock(self.block_class, self.keys, field_data=DictFieldData(field_data))
 
         # mocking assets retrieval to make the transcripts code work in this test
-        block.get_transcript_asset = lambda x: MockAsset('fr.url') if x == 'fr' else None
         block.get_transcript_content = lambda x: example_srt if x == 'fr.url' else 'whatever'
 
         data = block.student_view_data(None)
