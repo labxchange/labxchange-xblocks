@@ -123,7 +123,10 @@ class AnnotatedVideoBlock(
 
             if child_block:
                 block_type = child_block.scope_ids.block_type
-                if str(child_usage_id) == self.video_id:
+                # We can assume there's going to be only one video
+                # associated with the annotated video block to avoid calculating
+                # the replica id when using this in pathways.
+                if block_type in ["video", "lx_video"]:
                     video_block = child_block
                 child_block_data = {
                     "usage_id": str(child_usage_id),

@@ -82,7 +82,7 @@ class VideoBlockTestCase(BlockTestCaseBase):
                 },
                 "saved_video_position": 0.0,
                 "speed": None,
-                "transcripts": {"en": "transcript/download"},
+                "transcripts": {"en": "transcript/download/lang=en"},
             },
         ),
         (
@@ -100,7 +100,7 @@ class VideoBlockTestCase(BlockTestCaseBase):
                 "saved_video_position": 0.0,
                 "speed": 1.5,
                 "saved_video_position": 90.0,
-                "transcripts": {"en": "transcript/download"},
+                "transcripts": {"en": "transcript/download/lang=en"},
             },
         ),
     )
@@ -145,44 +145,3 @@ class VideoBlockTestCase(BlockTestCaseBase):
             self.block_class, self.keys, field_data=DictFieldData(field_data)
         )
         assert block.get_transcripts_info() == expected_data
-
-    @ddt.data(
-        (
-            {
-                "content": "test_content",
-                "filename": "my-file.srt",
-                "language": "en",
-                "content_type": "application/json",
-            },
-        ), (
-            {
-                "content": "test_content",
-                "filename": "my-file.srt",
-                "language": "en",
-                "content_type": "application/json",
-                "add_attachment_header": False,
-            },
-        ), (
-            {
-                "content": "test_content",
-                "filename": "my-file.srt",
-                "language": "fr",
-                "content_type": "application/json",
-                "add_attachment_header": True,
-            },
-        )
-    )
-    @ddt.unpack
-    def test_make_transcript_http_response(self, parameters):
-        block = self._construct_xblock_mock(
-            self.block_class, self.keys, field_data=DictFieldData({})
-        )
-        response = block.make_transcript_http_response(**parameters)
-        assert response.text == parameters.get('content')
-        assert ('Content-Language', parameters.get('language')) in response.headerlist
-        assert ('Content-Length', str(len(response.text))) in response.headerlist
-        assert ('Content-Type', parameters.get('content_type')) in response.headerlist
-        if parameters.get('add_attachment_header'):
-            assert (
-                'Content-Disposition',
-                f'attachment; filename=\"{parameters.get("filename")}\"') in response.headerlist

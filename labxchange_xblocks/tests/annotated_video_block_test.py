@@ -90,5 +90,7 @@ class AnnotatedVideoBlockTestCase(XmlTest, BlockTestCaseBase):
                         "image_url": "/static/image.png",
                     }
                 ],
+                'video_poster': 'http://img.youtube.com/vi/3_yD_cEKoCk/0.jpg',
+                'video_youtube_id': '3_yD_cEKoCk',
             },
         )

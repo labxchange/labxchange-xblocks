@@ -4,9 +4,6 @@ Audio XBlock.
 """
 import json
 
-import pysrt
-import requests
-import six
 from webob import Response
 from xblock.core import XBlock
 from xblock.fields import Dict, Scope, String
@@ -27,16 +24,6 @@ except ImportError:
         """
         Dummy class to use when running outside of Open edX.
         """
-
-
-def srt_to_html(srt_string):
-    """
-    Takes an str formatted string, and returns marked up html.
-    Strips all timestamps; this is to simply render it neatly.
-    """
-    sequences = pysrt.from_string(srt_string.decode('utf-8'))
-    return "\n".join(f"<p>{x.text}</p>" for x in sequences)
-
 
 @XBlock.wants('blockstore')
 class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
@@ -61,8 +48,6 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
     )
 
     # Data format: {
-    #   'de': 'german_translation.srt',
-    #   'uk': 'ukrainian_translation.srt',
     #   'au': {
     #     'type': 'inlinehtml',
     #     'content': '<p>Welcome to the show</p> ...',
@@ -83,43 +68,22 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
 
     student_view_template = 'templates/audio_student_view.html'
 
-    def __init__(self, *args, **kwargs):
-        """
-        Create an instance of the Audio XBlock.
-        """
-        super().__init__(*args, **kwargs)
-        self._assets = None
-
     def student_view_data(self, context=None):
         """
         Return content and settings for student view.
         """
         options = []
-        transcripts = {}
         for lang in self.transcripts.keys():
-            current_asset = self.get_transcript_asset(lang)
             options.append({
                 'lang': lang,
                 'language': iso_languages.get(lang),
             })
 
-            # Convert legacy srt subtitles on the fly.
-            # These will be permanently saved when the client saves.
-            value = self.transcripts[lang]
-            if current_asset and isinstance(value, str):
-                content = self.get_transcript_content(current_asset.url)
-                transcripts[lang] = {
-                    "type": "inlinehtml",
-                    "content": srt_to_html(content),
-                }
-            else:
-                transcripts[lang] = value
-
         return {
             'display_name': self.display_name,
             'embed_code': self.embed_code,
             'options': options,
-            'transcripts': transcripts,
+            'transcripts': self.transcripts,
             'user_state': self.user_state,
         }
 
@@ -133,38 +97,6 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
             'current_language': current_language,
         }
 
-    @property
-    def assets(self):
-        """ Returns every block assets from Blockstore """
-        if self._assets is None:
-            self._assets = []
-            if USE_LIBRARY_API:
-                self._assets = library_api.get_library_block_static_asset_files(self.scope_ids.usage_id)
-            else:
-                blockstore_service = self.runtime.service(self, 'blockstore')
-                if blockstore_service:
-                    self._assets = blockstore_service.get_library_block_static_asset_files(
-                        self.scope_ids.usage_id,
-                    )
-        return self._assets
-
-    def get_transcript_asset(self, lang):
-        """
-        Returns the lang asset object (not the actual content)
-        from Blockstore
-        """
-        transcript_name = 'transcript-{}.srt'.format(lang)
-        for asset in self.assets:
-            if asset.path == transcript_name:
-                return asset
-
-        return None
-
-    def get_transcript_content(self, url):
-        """ Retrieves and returns transcript content from Blockstore """
-        response = requests.get(url)
-        return response.content
-
     @XBlock.handler
     def student_view_user_state(
         self, request, suffix=""
@@ -177,70 +109,3 @@ class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):
         return Response(
             json.dumps(state), content_type="application/json", charset="UTF-8"
         )
-
-    @XBlock.handler
-    def sequences(self, request, dispatch):  # pylint: disable=unused-argument
-        """
-        Returns sequences based on lang parameter.
-        This is used by the frontend audio-xblock.js to render the srt content in audio_student_view.html.
-        NOTE: this will be removed once we begin rendering the block in the labxchange frontend (in LX-2243).
-        """
-        lang = request.GET.get('lang', None)
-        if not lang:
-            lang = self.user_state.get('current_language')
-
-        lang = lang.rstrip('/')
-        value = self.transcripts.get(lang)
-
-        if isinstance(value, str):
-            # value is file name
-            asset = self.get_transcript_asset(lang)
-            if asset:
-                content = self.get_transcript_content(asset.url)
-                return Response(
-                    json.dumps({"content": srt_to_html(content)}),
-                    headerlist=[('Content-Type', 'application/json')],
-                    charset='utf8'
-                )
-        else:
-            # `value` is of shape {"type": "inlinehtml", "content": "<p>content</p>"}
-            if value["type"] == "inlinehtml":
-                return Response(
-                    json.dumps({"content": value["content"]}),
-                    headerlist=[('Content-Type', 'application/json')],
-                    charset='utf8'
-                )
-
-        return Response(status=404)
-
-    @XBlock.handler
-    def transcript(self, request, dispatch):
-        """
-        Returns a transcript from the Blockstore
-        """
-        if dispatch.startswith('download'):
-            lang = request.GET.get('lang', None)
-            if lang:
-                lang = lang.rstrip('/')
-
-            asset = self.get_transcript_asset(lang)
-            if not asset:
-                return Response(status=404)
-
-            transcript = self.get_transcript_content(asset.url)
-            headerlist = [('Content-Language', lang), ]
-            headerlist.append(
-                (
-                    'Content-Disposition',
-                    'attachment; filename="{}"'.format(asset.path.encode('utf-8') if six.PY2 else asset.path)
-                )
-            )
-
-            response = Response(
-                transcript,
-                headerlist=headerlist,
-                charset='utf8'
-            )
-            response.content_type = 'text/srt'
-            return response
-        return Response(status=400)
