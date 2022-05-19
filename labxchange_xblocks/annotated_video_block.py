@@ -126,7 +126,7 @@ class AnnotatedVideoBlock(
                 # We can assume there's going to be only one video
                 # associated with the annotated video block to avoid calculating
                 # the replica id when using this in pathways.
-                if any(block_type in str(child_usage_id) for block_type in ["video", "lx_video"]):
+                if block_type in ["video", "lx_video"]:
                     video_block = child_block
                 child_block_data = {
                     "usage_id": str(child_usage_id),
