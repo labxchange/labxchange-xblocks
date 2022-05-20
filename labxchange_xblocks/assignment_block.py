@@ -73,8 +73,6 @@ class AssignmentBlock(
         Return content and settings for student view.
         """
         child_blocks_data = []
-        print("AAAAAAAAAAaBBBBBBBBb")
-        print(self.block_type)
 
         for child_usage_id in self.children:  # pylint: disable=no-member
             child_block = self.runtime.get_block(child_usage_id, block_type_overrides=LX_BLOCK_TYPES_OVERRIDE)
