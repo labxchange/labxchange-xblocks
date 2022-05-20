@@ -37,8 +37,6 @@ except ImportError:
 
 LX_BLOCK_TYPES_OVERRIDE = {
     'problem': 'lx_question',
-    'video': 'lx_video',
-    'html': 'lx_html',
 }
 
 class AssignmentBlock(
@@ -75,6 +73,9 @@ class AssignmentBlock(
         Return content and settings for student view.
         """
         child_blocks_data = []
+        print("AAAAAAAAAAaBBBBBBBBb")
+        print(self.block_type)
+
         for child_usage_id in self.children:  # pylint: disable=no-member
             child_block = self.runtime.get_block(child_usage_id, block_type_overrides=LX_BLOCK_TYPES_OVERRIDE)
             if child_block:
