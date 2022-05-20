@@ -35,6 +35,11 @@ except ImportError:
         Dummy class to use when running outside of Open edX.
         """
 
+LX_BLOCK_TYPES_OVERRIDE = {
+    'problem': 'lx_question',
+    'video': 'lx_video',
+    'html': 'lx_html',
+}
 
 class AssignmentBlock(
     XBlock,
@@ -71,7 +76,7 @@ class AssignmentBlock(
         """
         child_blocks_data = []
         for child_usage_id in self.children:  # pylint: disable=no-member
-            child_block = self.runtime.get_block(child_usage_id)
+            child_block = self.runtime.get_block(child_usage_id, block_type_overrides=LX_BLOCK_TYPES_OVERRIDE)
             if child_block:
                 weight = self._get_weighted_score_possible_for_child(child_block)
                 child_block_data = {
@@ -101,7 +106,7 @@ class AssignmentBlock(
         total_possible = 0
 
         for child_usage_id in self.children:  # pylint: disable=no-member
-            child_block = self.runtime.get_block(child_usage_id)
+            child_block = self.runtime.get_block(child_usage_id, block_type_overrides=LX_BLOCK_TYPES_OVERRIDE)
             if child_block:
                 score = self.get_weighted_score_for_block(child_block)
                 child_blocks_state[str(child_usage_id)] = {'score': score}
@@ -144,7 +149,7 @@ class AssignmentBlock(
             if any_graded:
                 return {'earned': earned, 'possible': possible}
         # If this is a scorable block like a capa problem:
-        if getattr(block, 'has_score', False) is True:
+        if getattr(block, 'has_score', False) is True and getattr(block, 'get_score', None) is not None:
             score = block.get_score()
             if score is not None:
                 cannot_compute_with_weight = block.weight is None or score.raw_possible == 0
