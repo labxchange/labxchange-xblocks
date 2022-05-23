@@ -2,12 +2,10 @@
 Helper code.
 """
 import json
+
 import pkg_resources
-
+from django.template import Context, Template
 from django.template.defaulttags import register
-from django.template import Context, Template, Engine
-from django.template.backends.django import get_installed_libraries
-
 from web_fragments.fragment import Fragment
 from webob import Response
 from xblock.core import XBlock, XBlockMixin
@@ -19,6 +17,14 @@ try:
     replace_urls_available = True
 except ImportError:
     replace_urls_available = False
+
+
+# Used to override block types when getting block data of children
+LX_BLOCK_TYPES_OVERRIDE = {
+    'problem': 'lx_question',
+    'video': 'lx_video',
+    'html': 'lx_html',
+}
 
 
 @register.filter
@@ -91,7 +97,7 @@ class StudentViewBlockMixin(XBlockMixin):
         if self.has_children:
             child_blocks_data = []
             for child_usage_id in self.children:
-                child_block = self.runtime.get_block(child_usage_id)
+                child_block = self.runtime.get_block(child_usage_id, block_type_overrides=LX_BLOCK_TYPES_OVERRIDE)
                 if child_block:
                     child_block_fragment = child_block.render(child_view, initial_context)
                     child_block_content = child_block_fragment.content
@@ -172,7 +178,7 @@ class StudentViewBlockMixin(XBlockMixin):
         Input: a string like "/static/image.png"
         Output: an absolute URL as a string, e.g. "https://cdn.none/course/234/image.png"
         """
-        html_str = u'"{}"'.format(url)  # The static replacers look for quoted URLs like this
+        html_str = '"{}"'.format(url)  # The static replacers look for quoted URLs like this
         if hasattr(self.runtime, 'transform_static_paths_to_urls'):
             # This runtime supports the newest API for replacing static URLs,
             # where the static assets are specific to each XBlock:

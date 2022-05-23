@@ -7,7 +7,6 @@ from xblock.fields import Scope, String
 
 from .utils import StudentViewBlockMixin, _
 
-
 try:
     from xblockutils.studio_editable import StudioEditableXBlockMixin
 except ImportError:

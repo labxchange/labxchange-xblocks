@@ -43,7 +43,6 @@ coverage: clean ## generate and view HTML coverage report
 
 quality: ## check coding style with pycodestyle and pylint
 	pylint labxchange_xblocks $(PROJECT_ROOT)setup.py
-	pylint --py3k labxchange_xblocks $(PROJECT_ROOT)setup.py
 	pycodestyle $(PROJECT_ROOT)labxchange_xblocks $(PROJECT_ROOT)setup.py
 	isort --check-only --diff --recursive $(PROJECT_ROOT)labxchange_xblocks $(PROJECT_ROOT)setup.py
 

@@ -12,7 +12,7 @@ from .i18n import iso_languages
 from .utils import StudentViewBlockMixin, _
 
 try:
-    from openedx.core.djangoapps.content_libraries import api as library_api
+    from openedx.core.djangoapps.content_libraries import api as library_api  # pylint: disable=unused-import
     USE_LIBRARY_API = True
 except ModuleNotFoundError:
     USE_LIBRARY_API = False
@@ -24,6 +24,7 @@ except ImportError:
         """
         Dummy class to use when running outside of Open edX.
         """
+
 
 @XBlock.wants('blockstore')
 class AudioBlock(XBlock, StudioEditableXBlockMixin, StudentViewBlockMixin):

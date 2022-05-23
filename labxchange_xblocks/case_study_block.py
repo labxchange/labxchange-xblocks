@@ -6,7 +6,7 @@ from xblock.completable import XBlockCompletionMode
 from xblock.core import XBlock
 from xblock.fields import List, Scope, String
 
-from .utils import StudentViewBlockMixin, _
+from .utils import LX_BLOCK_TYPES_OVERRIDE, StudentViewBlockMixin, _
 
 try:
     from xblockutils.studio_editable import (
@@ -19,7 +19,6 @@ except ImportError:
         """
         Dummy class to use when running outside of Open edX.
         """
-
 
     class StudioEditableXBlockMixin:
         """
@@ -93,7 +92,7 @@ For example: [
         child_blocks = []
 
         for child_usage_id in self.children:  # pylint: disable=no-member
-            child_block = self.runtime.get_block(child_usage_id)
+            child_block = self.runtime.get_block(child_usage_id, block_type_overrides=LX_BLOCK_TYPES_OVERRIDE)
             if child_block:
                 valid_child_block_ids.add(str(child_usage_id))
                 child_block_data = {

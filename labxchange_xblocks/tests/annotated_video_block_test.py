@@ -60,7 +60,7 @@ class AnnotatedVideoBlockTestCase(XmlTest, BlockTestCaseBase):
         )
         block.children.append(video_block.scope_ids.block_type)
 
-        def get_block(usage_id):
+        def get_block(usage_id, block_type_overrides):
             if usage_id == "video":
                 return video_block
 

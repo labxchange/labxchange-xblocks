@@ -9,7 +9,7 @@ from xblock.completable import XBlockCompletionMode
 from xblock.core import XBlock
 from xblock.fields import Scope, String
 
-from .utils import StudentViewBlockMixin, _, xblock_specs_from_categories
+from .utils import LX_BLOCK_TYPES_OVERRIDE, StudentViewBlockMixin, _, xblock_specs_from_categories
 
 try:
     from xblockutils.studio_editable import (
@@ -23,21 +23,16 @@ except ImportError:
         Dummy class to use when running outside of Open edX.
         """
 
-
     class StudioEditableXBlockMixin:
         """
         Dummy class to use when running outside of Open edX.
         """
-
 
     class XBlockWithPreviewMixin:
         """
         Dummy class to use when running outside of Open edX.
         """
 
-LX_BLOCK_TYPES_OVERRIDE = {
-    'problem': 'lx_question',
-}
 
 class AssignmentBlock(
     XBlock,
@@ -148,7 +143,7 @@ class AssignmentBlock(
             if any_graded:
                 return {'earned': earned, 'possible': possible}
         # If this is a scorable block like a capa problem:
-        if getattr(block, 'has_score', False) is True and getattr(block, 'get_score', None) is not None:
+        if getattr(block, 'has_score', False) is True:
             score = block.get_score()
             if score is not None:
                 cannot_compute_with_weight = block.weight is None or score.raw_possible == 0

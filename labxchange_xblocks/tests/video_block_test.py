@@ -7,7 +7,6 @@ import json
 
 import ddt
 from mock import Mock
-from webob import Response
 from xblock.field_data import DictFieldData
 
 from labxchange_xblocks.tests.utils import BlockTestCaseBase
@@ -97,7 +96,6 @@ class VideoBlockTestCase(BlockTestCaseBase):
                 "encoded_videos": {
                     "youtube": {"url": "https://www.youtube.com/watch?v=-SNwRT85WMo"}
                 },
-                "saved_video_position": 0.0,
                 "speed": 1.5,
                 "saved_video_position": 90.0,
                 "transcripts": {"en": "transcript/download/lang=en"},

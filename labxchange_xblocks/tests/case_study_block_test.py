@@ -58,7 +58,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
         )
         block.children.append(image_block.scope_ids.block_type)
 
-        def get_block(usage_id):
+        def get_block(usage_id, block_type_overrides):
             if usage_id == "lx_document":
                 return document_block
             if usage_id == "lx_image":
@@ -214,7 +214,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
         block.sections = sections
         block.attachments = attachments
 
-        def get_block(usage_id):
+        def get_block(usage_id, block_type_overrides):
             if usage_id == "lx_document":
                 return document_block
             if usage_id == "lx_image":
@@ -284,7 +284,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
             block.attachments = "foo"
         block.attachments = ["lx_image"]
 
-        def get_block(usage_id):
+        def get_block(usage_id, block_type_overrides):
             if usage_id == "lx_document":
                 return document_block
             if usage_id == "lx_image":
