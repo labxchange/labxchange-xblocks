@@ -6,7 +6,7 @@ from xblock.completable import XBlockCompletionMode
 from xblock.core import XBlock
 from xblock.fields import List, Scope, String
 
-from .utils import LX_BLOCK_TYPES_OVERRIDE, StudentViewBlockMixin, _
+from .utils import StudentViewBlockMixin, _
 
 try:
     from xblockutils.studio_editable import (
@@ -90,9 +90,11 @@ For example: [
         """
         valid_child_block_ids = set()
         child_blocks = []
+        context = context or {}
 
+        block_type_overrides = context.get('block_type_overrides')
         for child_usage_id in self.children:  # pylint: disable=no-member
-            child_block = self.runtime.get_block(child_usage_id, block_type_overrides=LX_BLOCK_TYPES_OVERRIDE)
+            child_block = self.runtime.get_block(child_usage_id, block_type_overrides=block_type_overrides)
             if child_block:
                 valid_child_block_ids.add(str(child_usage_id))
                 child_block_data = {
