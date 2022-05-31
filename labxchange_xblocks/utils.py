@@ -76,6 +76,15 @@ class StudentViewBlockMixin(XBlockMixin):
         """
         return {}
 
+    def _block_type_overrides(self, request):
+        """
+        Returns LX_BLOCK_TYPES_OVERRIDE if lx_block_types=1 is part of the request.
+        """
+        block_type_overrides = None
+        if 'lx_block_types=1' in request.url:
+            block_type_overrides=LX_BLOCK_TYPES_OVERRIDE
+        return block_type_overrides
+
     @XBlock.supports("multi_device")  # Mark as mobile-friendly
     def student_view(self, context=None):
         """
@@ -97,7 +106,7 @@ class StudentViewBlockMixin(XBlockMixin):
         if self.has_children:
             child_blocks_data = []
             for child_usage_id in self.children:
-                child_block = self.runtime.get_block(child_usage_id, block_type_overrides=LX_BLOCK_TYPES_OVERRIDE)
+                child_block = self.runtime.get_block(child_usage_id)
                 if child_block:
                     child_block_fragment = child_block.render(child_view, initial_context)
                     child_block_content = child_block_fragment.content
@@ -160,8 +169,11 @@ class StudentViewBlockMixin(XBlockMixin):
         """
         Return JSON representation of content and settings for student view.
         """
+        context = {
+            'block_type_overrides': self._block_type_overrides(request),
+        }
         return Response(
-            json.dumps(self.student_view_data()),
+            json.dumps(self.student_view_data(context=context)),
             content_type='application/json',
             charset='UTF-8'
         )
