@@ -46,7 +46,7 @@ class AssignmentBlockTestCase(XmlTest, BlockTestCaseBase):
         }))
         block.children.append(image_block.scope_ids.block_type)
 
-        def get_block(usage_id):
+        def get_block(usage_id, block_type_overrides):
             if usage_id == 'lx_document':
                 return document_block
             if usage_id == 'lx_image':
@@ -57,7 +57,7 @@ class AssignmentBlockTestCase(XmlTest, BlockTestCaseBase):
         data = block.student_view_data(None)
 
         self.assertDictEqual(data, {
-            u'child_blocks': [
+            'child_blocks': [
                 {
                     'block_type': 'lx_document',
                     'display_name': 'Assignment Document',
@@ -74,5 +74,5 @@ class AssignmentBlockTestCase(XmlTest, BlockTestCaseBase):
                     'weight': 0,
                 }
             ],
-            u'display_name': u'Assignment 1'
+            'display_name': 'Assignment 1'
         })

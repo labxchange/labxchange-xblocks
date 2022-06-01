@@ -1,6 +1,7 @@
 """
 Annotated video block tests
 """
+import mock
 from xblock.completable import XBlockCompletionMode
 from xblock.field_data import DictFieldData
 from xblock.fields import ScopeIds
@@ -60,13 +61,13 @@ class AnnotatedVideoBlockTestCase(XmlTest, BlockTestCaseBase):
         )
         block.children.append(video_block.scope_ids.block_type)
 
-        def get_block(usage_id):
+        def get_block(usage_id, block_type_overrides):
             if usage_id == "video":
                 return video_block
 
         self.runtime_mock.get_block.side_effect = get_block
 
-        response = block.student_view_data_and_user_state(request=None)
+        response = block.student_view_data_and_user_state(request=mock.Mock(url=''))
         data = response.json
 
         self.assertDictEqual(

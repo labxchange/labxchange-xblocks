@@ -24,12 +24,10 @@ except ImportError:
         Dummy class to use when running outside of Open edX.
         """
 
-
     class StudioEditableXBlockMixin:
         """
         Dummy class to use when running outside of Open edX.
         """
-
 
     class XBlockWithPreviewMixin:
         """
@@ -117,9 +115,10 @@ class AnnotatedVideoBlock(
         child_blocks = []
         annotations = []
         video_block = None
+        block_type_overrides = self._block_type_overrides(request)
 
         for child_usage_id in self.children:  # pylint: disable=no-member
-            child_block = self.runtime.get_block(child_usage_id)
+            child_block = self.runtime.get_block(child_usage_id, block_type_overrides=block_type_overrides)
 
             if child_block:
                 block_type = child_block.scope_ids.block_type

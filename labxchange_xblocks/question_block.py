@@ -12,6 +12,7 @@ from xblock import fields
 from xblock.core import XBlock
 from xblock.exceptions import JsonHandlerError
 from xblock.fields import Scope
+from xblock.scorable import Score
 
 from .utils import StudentViewBlockMixin, _
 
@@ -148,6 +149,12 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
     def _has_attempts(self) -> bool:
         return self.max_attempts < 1 or self.student_attempts < self.max_attempts
 
+    def get_score(self):
+        possible = self.weight if self.weight > 0 else 1
+        correct = self._is_correct()
+        earned = possible if correct else 0
+        return Score(raw_earned=earned, raw_possible=possible)
+
     def _student_view_question_data(self) -> dict:
         """
         Return a copy of the question data,
@@ -233,7 +240,7 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
         - True if last answer submitted was correct
         - False if last answer submitted was incorrect
         """
-        if self.student_answer == {}:
+        if not self.student_answer:
             return None
 
         if self.question_data["type"] == "optionresponse":

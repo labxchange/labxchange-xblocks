@@ -367,6 +367,7 @@ class QuestionBlockTestCase(BlockTestCaseBase):
         data = block._student_view_user_state_data()
         assert data["correct"] is False
         assert data["questionData"]["studentAnswer"] == {"selected": [0, 1]}
+        assert block.get_score().raw_earned == 0
 
         response = block.submit_answer(request_wrap({"selected": [0, 1, 5]}))
         assert response.status_code == 400
@@ -374,6 +375,7 @@ class QuestionBlockTestCase(BlockTestCaseBase):
         data = block._student_view_user_state_data()
         assert data["correct"] is False
         assert data["questionData"]["studentAnswer"] == {"selected": [0, 1]}
+        assert block.get_score().raw_earned == 0
 
         response = block.submit_answer(request_wrap({"selected": [1, 2]}))
         assert response.status_code == 200
@@ -381,6 +383,7 @@ class QuestionBlockTestCase(BlockTestCaseBase):
         data = block._student_view_user_state_data()
         assert data["correct"] is True
         assert data["questionData"]["studentAnswer"] == {"selected": [1, 2]}
+        assert block.get_score().raw_earned == 1
 
         # once a correct answer is submitted, no more answers are accepted
         response = block.submit_answer(request_wrap({"selected": [0, 1]}))
@@ -389,6 +392,7 @@ class QuestionBlockTestCase(BlockTestCaseBase):
         data = block._student_view_user_state_data()
         assert data["correct"] is True
         assert data["questionData"]["studentAnswer"] == {"selected": [1, 2]}
+        assert block.get_score().raw_earned == 1
 
     def test_submit_answer_stringresponse(self):
         """
@@ -427,6 +431,7 @@ class QuestionBlockTestCase(BlockTestCaseBase):
         assert data["correct"] is False
         assert data["questionData"]["studentAnswer"] == {"response": "one"}
         assert data["questionData"]["comment"] == "no"
+        assert block.get_score().raw_earned == 0
 
         response = block.submit_answer(request_wrap({"response": "four"}))
         assert response.status_code == 200
@@ -435,6 +440,7 @@ class QuestionBlockTestCase(BlockTestCaseBase):
         assert data["correct"] is False
         assert data["questionData"]["studentAnswer"] == {"response": "four"}
         assert data["questionData"]["comment"] == ""
+        assert block.get_score().raw_earned == 0
 
         response = block.submit_answer(request_wrap({"response": "three"}))
         assert response.status_code == 200
@@ -443,6 +449,7 @@ class QuestionBlockTestCase(BlockTestCaseBase):
         assert data["correct"] is True
         assert data["questionData"]["studentAnswer"] == {"response": "three"}
         assert data["questionData"]["comment"] == "yep this is ok too"
+        assert block.get_score().raw_earned == 1
 
         response = block.submit_answer(request_wrap({"response": "two"}))
         assert response.status_code == 400
@@ -451,6 +458,7 @@ class QuestionBlockTestCase(BlockTestCaseBase):
         assert data["correct"] is True
         assert data["questionData"]["studentAnswer"] == {"response": "three"}
         assert data["questionData"]["comment"] == "yep this is ok too"
+        assert block.get_score().raw_earned == 1
 
     def test_submit_answer_optionresponse(self):
         """
@@ -510,6 +518,7 @@ class QuestionBlockTestCase(BlockTestCaseBase):
         assert data["questionData"]["options"][0]["comment"] == "comment one"
         assert data["questionData"]["options"][1]["comment"] == ""
         assert data["questionData"]["options"][2]["comment"] == ""
+        assert block.get_score().raw_earned == 0
 
         response = block.submit_answer(request_wrap({"index": 1}))
         assert response.status_code == 200
@@ -520,6 +529,7 @@ class QuestionBlockTestCase(BlockTestCaseBase):
         assert data["questionData"]["options"][0]["comment"] == ""
         assert data["questionData"]["options"][1]["comment"] == "comment three"
         assert data["questionData"]["options"][2]["comment"] == ""
+        assert block.get_score().raw_earned == 0
 
         response = block.submit_answer(request_wrap({"index": 2}))
         assert response.status_code == 200
@@ -530,6 +540,7 @@ class QuestionBlockTestCase(BlockTestCaseBase):
         assert data["questionData"]["options"][0]["comment"] == ""
         assert data["questionData"]["options"][1]["comment"] == ""
         assert data["questionData"]["options"][2]["comment"] == "comment two"
+        assert block.get_score().raw_earned == 1
 
         response = block.submit_answer(request_wrap({"index": 1}))
         assert response.status_code == 400
@@ -540,6 +551,7 @@ class QuestionBlockTestCase(BlockTestCaseBase):
         assert data["questionData"]["options"][0]["comment"] == ""
         assert data["questionData"]["options"][1]["comment"] == ""
         assert data["questionData"]["options"][2]["comment"] == "comment two"
+        assert block.get_score().raw_earned == 1
 
         # test edge case where student answers, then list of options shortened
         block.question_data = {
