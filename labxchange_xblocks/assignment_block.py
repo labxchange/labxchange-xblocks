@@ -9,7 +9,7 @@ from xblock.completable import XBlockCompletionMode
 from xblock.core import XBlock
 from xblock.fields import Scope, String
 
-from .utils import LX_BLOCK_TYPES_OVERRIDE, StudentViewBlockMixin, _, xblock_specs_from_categories
+from .utils import StudentViewBlockMixin, _, xblock_specs_from_categories
 
 try:
     from xblockutils.studio_editable import (
@@ -68,9 +68,11 @@ class AssignmentBlock(
         Return content and settings for student view.
         """
         child_blocks_data = []
+        context = context or {}
 
+        block_type_overrides = context.get('block_type_overrides')
         for child_usage_id in self.children:  # pylint: disable=no-member
-            child_block = self.runtime.get_block(child_usage_id, block_type_overrides=LX_BLOCK_TYPES_OVERRIDE)
+            child_block = self.runtime.get_block(child_usage_id, block_type_overrides=block_type_overrides)
             if child_block:
                 weight = self._get_weighted_score_possible_for_child(child_block)
                 child_block_data = {
@@ -99,8 +101,9 @@ class AssignmentBlock(
         total_earned = 0
         total_possible = 0
 
+        block_type_overrides = self._block_type_overrides(request)
         for child_usage_id in self.children:  # pylint: disable=no-member
-            child_block = self.runtime.get_block(child_usage_id, block_type_overrides=LX_BLOCK_TYPES_OVERRIDE)
+            child_block = self.runtime.get_block(child_usage_id, block_type_overrides=block_type_overrides)
             if child_block:
                 score = self.get_weighted_score_for_block(child_block)
                 child_blocks_state[str(child_usage_id)] = {'score': score}

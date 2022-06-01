@@ -56,7 +56,7 @@ class BlockTestCaseBase(TestCase):
         data = block.student_view_data(None)
         self.assertDictEqual(data, expected_data)
 
-        handler_response = block.v1_student_view_data(mock.Mock())
+        handler_response = block.v1_student_view_data(mock.Mock(url=''))
         self.assertDictEqual(data, json.loads(handler_response.body.decode("utf-8")))
 
     def _test_student_view(self, field_data, expected_html):
