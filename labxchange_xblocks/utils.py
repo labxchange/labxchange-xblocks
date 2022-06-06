@@ -80,8 +80,16 @@ class StudentViewBlockMixin(XBlockMixin):
         """
         Returns LX_BLOCK_TYPES_OVERRIDE if lx_block_types=1 is part of the request.
         """
+        # Deal with the many types of request objects that might come through here
+        if hasattr(request, 'url'):  # WebOb
+            url = request.url
+        elif hasattr(request, 'get_full_path'):  # HttpRequest
+            url = request.get_full_path()
+        else:
+            url = ''
+
         block_type_overrides = None
-        if 'lx_block_types=1' in request.url:
+        if 'lx_block_types=1' in url:
             block_type_overrides = LX_BLOCK_TYPES_OVERRIDE
         return block_type_overrides
 
