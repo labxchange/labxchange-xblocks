@@ -305,6 +305,59 @@ class QuestionBlockTestCase(BlockTestCaseBase):
             {"content": "global hint 2"},
         ]
 
+    def test_lazy_parse_from_xml(self):
+        """
+        Test the lazy xml parsing that occurs when a QuestionBlock is loaded from a cached ProblemBlock's field data.
+        """
+        field_data = {
+            'data': """
+                <problem max_attempts="5" weight="2" display_name="Q1">
+                  <stringresponse answer="correct one">
+                    <label>&lt;p&gt;lorem &lt;strong&gt;ipsum&lt;/strong&gt;&lt;/p&gt;</label>
+                    <correcthint>this is the better correct</correcthint>
+                    <additional_answer answer="correct two">
+                        <correcthint>also correct!</correcthint>
+                    </additional_answer>
+                    <stringequalhint answer="wrong"/>
+                    <stringequalhint answer="also wrong!">:P</stringequalhint>
+                    <textline size="20"/>
+                  </stringresponse>
+                  <demandhint>
+                    <hint>global hint 1</hint>
+                    <hint>global hint 2</hint>
+                  </demandhint>
+              </problem>
+            """
+        }
+        expected_data = {
+            "maxAttempts": 5,
+            "current_score": 0,
+            "total_possible": 2.0,
+            "questionData": {
+                "type": "stringresponse",
+                "question": "<p>lorem <strong>ipsum</strong></p>",
+                "studentAnswer": {},
+            },
+            "hints": [
+                {"content": "global hint 1"},
+                {"content": "global hint 2"},
+            ],
+            "studentAttempts": 0,
+            "correct": None,
+        }
+        block = self._construct_xblock_mock(
+            self.block_class, self.keys, field_data=DictFieldData(field_data)
+        )
+        # Note that the question_data hasn't been loaded yet
+        assert block.question_data == {}
+        response = block.student_view_user_state(Mock())
+        assert json.loads(response.body.decode("utf-8")) == expected_data
+        # ..but it has now
+        assert block.question_data['type'] == "stringresponse"
+        assert block.display_name == 'Q1'
+        assert block.weight == 2
+        assert block.max_attempts == 5
+
     def test_submit_answer_choiceresponse(self):
         """
         Test the submitting answer process

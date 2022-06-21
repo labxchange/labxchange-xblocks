@@ -4,6 +4,7 @@ Question XBlock.
 """
 import html
 import json
+import logging
 from typing import List, Optional
 
 from lxml import etree
@@ -15,6 +16,8 @@ from xblock.fields import Scope
 from xblock.scorable import Score
 
 from .utils import StudentViewBlockMixin, _
+
+log = logging.getLogger(__name__)
 
 
 class QuestionBlock(XBlock, StudentViewBlockMixin):
@@ -37,6 +40,13 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
         help=_("The display name for this component."),
         default="Question",
         scope=Scope.content,
+    )
+
+    data = fields.XMLString(
+        help=_("XML data for the problem"),
+        scope=Scope.content,
+        enforce_type=True,
+        default="<lx_question></lx_question>"
     )
 
     max_attempts = fields.Integer(
@@ -140,6 +150,30 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
 
     student_view_template = "templates/question_student_view.html"
 
+    @property
+    def _question_data(self):
+        """
+        Calls parse_xml to parse the question data if it hasn't already been done.
+
+        Once this property is accessed for a QuestionBlock, it's safe to simply access self.question_data,
+        as that field has been populated.
+
+        This is needed temporarily to handle switching between cached ProblemBlock fields and QuestionBlock
+        fields, and can safely be removed when ProblemBlocks are no longer in use by LabXchange.
+        """
+        if not self.question_data:
+            # If no question data has been parsed yet, then parse it.
+            log.debug(f'QuestionBlock: re-parsing XML data for block {self.scope_ids.usage_id}')
+            try:
+                node = etree.XML(self.data)
+            except etree.XMLSyntaxError:
+                log.error(f'Error parsing problem types from xml for question block {self.scope_ids.usage_id}')
+                return None
+            self._parse_xml(node)
+            # Unmark the modified fields as "dirty" -- nothing has actually changed.
+            self._clear_dirty_fields()
+        return self.question_data
+
     def student_view_data(self, context=None):
         """
         Return all data required to render or edit the xblock.
@@ -161,7 +195,7 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
         with all sensitive non-student facing information stripped.
         This should also include feedback comments based on the student answer.
         """
-        t = self.question_data["type"]
+        t = self._question_data["type"]
         if t == "stringresponse":
             data = {
                 "type": t,
@@ -243,18 +277,19 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
         if not self.student_answer:
             return None
 
-        if self.question_data["type"] == "optionresponse":
+        t = self._question_data["type"]
+        if t == "optionresponse":
             index = self.student_answer["index"]
             # this could happen if student submits answer, then options are removed later
             if index >= len(self.question_data["options"]):
                 return False
             return self.question_data["options"][index]["correct"]
-        if self.question_data["type"] == "stringresponse":
+        if t == "stringresponse":
             response = self.student_answer["response"]
             return response.lower() in map(
                 lambda x: x.lower(), self.question_data["answers"]
             )
-        if self.question_data["type"] == "choiceresponse":
+        if t == "choiceresponse":
             selected = self.student_answer["selected"]
             for index, choice in enumerate(self.question_data["choices"]):
                 if choice["correct"] != (index in selected):
@@ -262,13 +297,14 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
             return True
 
     def _student_view_user_state_data(self):
+        question_data = self._student_view_question_data()
         correct = self._is_correct()
         weight = self.weight if self.weight > 0 else 1
         return {
             "maxAttempts": self.max_attempts,
             "current_score": weight if correct else 0,
             "total_possible": weight,
-            "questionData": self._student_view_question_data(),
+            "questionData": question_data,
             "hints": self.hints,
             "studentAttempts": self.student_attempts,
             "correct": correct,
@@ -317,7 +353,8 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
         - raise an informative JsonHandlerError
         """
 
-        if self.question_data["type"] == "optionresponse":
+        t = self._question_data["type"]
+        if t == "optionresponse":
             index = data.get("index")
             n_options = len(self.question_data["options"])
             if index is None:
@@ -334,7 +371,7 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
                 )
             return {"index": index}
 
-        elif self.question_data["type"] == "stringresponse":
+        elif t == "stringresponse":
             response = data.get("response")
             if response is None:
                 raise JsonHandlerError(400, "`response` field missing")
@@ -342,7 +379,7 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
                 raise JsonHandlerError(400, "`response` field must be string")
             return {"response": response}
 
-        elif self.question_data["type"] == "choiceresponse":
+        elif t == "choiceresponse":
             selected = data.get("selected")
             n_choices = len(self.question_data["choices"])
             if selected is None:
@@ -370,25 +407,28 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
         Parse olx into this block.
         """
         block = runtime.construct_xblock_from_class(cls, keys)
+        block._parse_xml(node)  # pylint: disable=protected-access
+        return block
 
-        hints = []
+    def _parse_xml(self, node):
+        """
+        Parse olx into this block's fields.
+        """
+        self.hints = []
 
         for child in iter_without_comments(node):
             if child.tag == "demandhint":
-                hints.extend(parse_hints_from_node(child))
+                self.hints.extend(parse_hints_from_node(child))
             elif child.tag == "stringresponse":
-                block.question_data = parse_stringresponse_from_node(child)
+                self.question_data = parse_stringresponse_from_node(child)
             elif child.tag == "choiceresponse":
-                block.question_data = parse_choiceresponse_from_node(child)
+                self.question_data = parse_choiceresponse_from_node(child)
             elif child.tag in ["multiplechoiceresponse", "optionresponse"]:
-                block.question_data = parse_optionresponse_from_node(child)
+                self.question_data = parse_optionresponse_from_node(child)
 
-        block.hints = hints
-        block.max_attempts = int(node.attrib.get("max_attempts", 0))
-        block.weight = float(node.attrib.get("weight", 1))
-        block.display_name = node.attrib.get("display_name", "Question")
-
-        return block
+        self.max_attempts = int(node.attrib.get("max_attempts", 0))
+        self.weight = float(node.attrib.get("weight", 1))
+        self.display_name = node.attrib.get("display_name", "Question")
 
 
 def parse_stringresponse_from_node(node: "xmlnode") -> dict:
