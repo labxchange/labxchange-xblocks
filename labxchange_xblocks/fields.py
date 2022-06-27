@@ -18,8 +18,16 @@ class RelativeTime(JSONField):
     @classmethod
     def isotime_to_timedelta(cls, value):
         """
-        Validate the "HH:MM:SS" format.
+        Convert integers and strings to the "HH:MM:SS" format.
         """
+        try:
+            # Convert integers into a formatted time string.
+            value = int(value)
+            value = time.strftime('%H:%M:%S', time.gmtime(int(value)))
+        except ValueError as e:
+            # Skip these -- we'll catch them below
+            pass
+
         try:
             obj_time = time.strptime(value, "%H:%M:%S")
         except ValueError as e:
@@ -43,13 +51,7 @@ class RelativeTime(JSONField):
         if isinstance(value, datetime.timedelta):
             return value
 
-        if isinstance(value, float):
-            return datetime.timedelta(seconds=value)
-
-        if isinstance(value, str):
-            return self.isotime_to_timedelta(value)
-
-        raise TypeError(f"RelativeTime Field {self.name} has bad value '{value!r}'")
+        return self.isotime_to_timedelta(value)
 
     def to_json(self, value):
         """
