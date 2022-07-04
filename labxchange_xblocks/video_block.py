@@ -162,11 +162,11 @@ class VideoBlock(XBlock, StudentViewBlockMixin):
     def xmodule_handler(self, request, suffix=None):
         """Catchall handler for the xmodule path"""
 
-        data = MultiDict(request.POST)
+        data = MultiDict(request.POST or request.data)
         response_data = {"success": False}
         conversions = {
             "saved_video_position": RelativeTime.isotime_to_timedelta,
-            "speed": json.loads,
+            "speed": lambda s: json.loads(str(s)),
             "transcript_language": lambda s: s,
         }
 
