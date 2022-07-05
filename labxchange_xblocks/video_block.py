@@ -231,11 +231,11 @@ class VideoBlock(XBlock, StudentViewBlockMixin):
                     )
                 except Exception as err:  # pylint: disable=broad-except
                     raise NotFoundError(
-                        f"Transcript file '{path}' missing for video XBlock {self.scope_ids.usage_id}"
+                        f"Transcript file '{filename}' missing for video XBlock {self.scope_ids.usage_id}"
                     ) from err
             else:
                 raise NotFoundError(
-                    "Unable to load transcript file '{path}' for video XBlock {self.scope_ids.usage_id}: "
+                    "Unable to load transcript file '{filename}' for video XBlock {self.scope_ids.usage_id}: "
                     "blockstore service not available"
                 )
         # Now convert the transcript data to the requested format:
@@ -312,14 +312,16 @@ class VideoBlock(XBlock, StudentViewBlockMixin):
     def transcript(self, request, dispatch):  # pylint: disable=unused-argument
         """Handler for transcripts"""
         transcripts = self.get_transcripts_info()
-
-        path = request.path_info
-        params = request.params
-
         if dispatch.startswith("translation"):
+            path = request.path_info
             language = path.replace("translation", "").strip("/")
             return self.handle_transcript_translation(request, transcripts, language)
         elif dispatch.startswith("download"):
+            params = {}
+            if hasattr(request, 'params'):
+                params = request.params
+            elif hasattr(request, 'query_params'):
+                params = request.query_params
             lang = params.get("lang", None)
             return self.handle_transcript_download(transcripts, lang)
         else:
