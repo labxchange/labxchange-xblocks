@@ -9,8 +9,8 @@ from xblock.test.test_parsing import XmlTest
 from xmodule.tests.test_import import DummySystem
 from xmodule.video_module import VideoBlock
 
-from labxchange_xblocks.annotated_video_block import AnnotatedVideoBlock
-from labxchange_xblocks.tests.utils import BlockTestCaseBase
+from ..annotated_video_block import AnnotatedVideoBlock
+from ..tests.utils import BlockTestCaseBase
 
 
 class AnnotatedVideoBlockTestCase(XmlTest, BlockTestCaseBase):
