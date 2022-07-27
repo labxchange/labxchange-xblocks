@@ -328,3 +328,24 @@ class VideoBlock(XBlock, StudentViewBlockMixin):
             log.debug("Path not supported.")
             response = Response(status=404)
         return response
+
+    @classmethod
+    def parse_xml(
+        cls, node, runtime, keys, id_generator=None
+    ):  # pylint: disable=unused-argument
+        """
+        Parse block XML.
+
+        This is short circuiting some methods in the original `parse_xml`
+        method and skipping adding the child nodes to the class.
+
+        Everything we need is already included in the block properties,
+        so we don't need to look at the children nor pass them through
+        the runtime.
+        """
+        block = runtime.construct_xblock_from_class(cls, keys)
+
+        for name, value in node.items():
+            cls._set_field_if_present(block, name, value, {})
+
+        return block
