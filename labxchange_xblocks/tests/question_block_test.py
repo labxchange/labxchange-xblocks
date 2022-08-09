@@ -125,9 +125,9 @@ class QuestionBlockTestCase(BlockTestCaseBase):
                     "question": "The answer is two.",
                     "options": [
                         {
-                            "content": "one",
+                            "content": "on\u00e9",
                             "correct": False,
-                            "comment": "comment one",
+                            "comment": "comment on\u00e9",
                         },
                         {
                             "content": "two",
@@ -151,7 +151,7 @@ class QuestionBlockTestCase(BlockTestCaseBase):
                     "question": "The answer is two.",
                     "options": [
                         {
-                            "content": "one",
+                            "content": "on\u00e9",
                             "checked": False,
                             "comment": "",
                         },
@@ -175,10 +175,10 @@ class QuestionBlockTestCase(BlockTestCaseBase):
                     "question": "The answer is two and three.",
                     "choices": [
                         {
-                            "content": "one",
+                            "content": "on\u00e9",
                             "correct": False,
-                            "selected_comment": "comment one",
-                            "unselected_comment": "un comment one",
+                            "selected_comment": "comment on\u00e9",
+                            "unselected_comment": "un comment on\u00e9",
                         },
                         {
                             "content": "two",
@@ -212,9 +212,9 @@ class QuestionBlockTestCase(BlockTestCaseBase):
                     "question": "The answer is two and three.",
                     "choices": [
                         {
-                            "content": "one",
+                            "content": "on\u00e9",
                             "checked": False,
-                            "comment": "un comment one",
+                            "comment": "un comment on\u00e9",
                         },
                         {
                             "content": "two",
@@ -233,6 +233,159 @@ class QuestionBlockTestCase(BlockTestCaseBase):
                 "hints": [],
                 "studentAttempts": 1,
                 "correct": True,
+            },
+        ),
+        (  # correct option response, parsed from Open edX response
+            {
+                "question_data": {
+                    "type": "optionresponse",
+                    "display": "radio",
+                    "question": "The answer is two.",
+                    "options": [
+                        {
+                            "content": "on\u00e9",
+                            "correct": False,
+                            "comment": "comment on\u00e9",
+                        },
+                        {
+                            "content": "two",
+                            "correct": True,
+                            "comment": "comment two",
+                        },
+                    ],
+                },
+                "student_answer": {
+                    "response": "two",
+                },
+                "student_attempts": 1,
+            },
+            {
+                "maxAttempts": 0,
+                "current_score": 1,
+                "total_possible": 1,
+                "questionData": {
+                    "type": "optionresponse",
+                    "display": "radio",
+                    "question": "The answer is two.",
+                    "options": [
+                        {
+                            "content": "on\u00e9",
+                            "checked": False,
+                            "comment": "",
+                        },
+                        {
+                            "content": "two",
+                            "checked": True,
+                            "comment": "comment two",
+                        },
+                    ],
+                    "studentAnswer": {"index": 1},
+                },
+                "hints": [],
+                "studentAttempts": 1,
+                "correct": True,
+            },
+        ),
+        (  # incorrect option response, parsed from Open edX response
+            {
+                "question_data": {
+                    "type": "optionresponse",
+                    "display": "radio",
+                    "question": "The answer is two.",
+                    "options": [
+                        {
+                            "content": "on\u00e9",
+                            "correct": False,
+                            "comment": "comment on\u00e9",
+                        },
+                        {
+                            "content": "two",
+                            "correct": True,
+                            "comment": "comment two",
+                        },
+                    ],
+                },
+                "student_answer": {
+                    "response": "on\u00e9",
+                },
+                "student_attempts": 1,
+            },
+            {
+                "maxAttempts": 0,
+                "current_score": 0,
+                "total_possible": 1,
+                "questionData": {
+                    "type": "optionresponse",
+                    "display": "radio",
+                    "question": "The answer is two.",
+                    "options": [
+                        {
+                            "content": "on\u00e9",
+                            "checked": True,
+                            "comment": "comment on\u00e9",
+                        },
+                        {
+                            "content": "two",
+                            "checked": False,
+                            "comment": "",
+                        },
+                    ],
+                    "studentAnswer": {"index": 0},
+                },
+                "hints": [],
+                "studentAttempts": 1,
+                "correct": False,
+            },
+        ),
+        (  # invalid option response, parsed from Open edX response
+            {
+                "question_data": {
+                    "type": "optionresponse",
+                    "display": "radio",
+                    "question": "The answer is two.",
+                    "options": [
+                        {
+                            "content": "on\u00e9",
+                            "correct": False,
+                            "comment": "comment on\u00e9",
+                        },
+                        {
+                            "content": "two",
+                            "correct": True,
+                            "comment": "comment two",
+                        },
+                    ],
+                },
+                "student_answer": {
+                    "response": "three",
+                },
+                "student_attempts": 1,
+            },
+            {
+                "maxAttempts": 0,
+                "current_score": 0,
+                "total_possible": 1,
+                "questionData": {
+                    "type": "optionresponse",
+                    "display": "radio",
+                    "question": "The answer is two.",
+                    "options": [
+                        {
+                            "content": "on\u00e9",
+                            "checked": False,
+                            "comment": "",
+                        },
+                        {
+                            "content": "two",
+                            "checked": False,
+                            "comment": "",
+                        },
+                    ],
+                    "studentAnswer": {},
+                },
+                "hints": [],
+                "studentAttempts": 1,
+                "correct": None,
             },
         ),
     )
@@ -268,7 +421,7 @@ class QuestionBlockTestCase(BlockTestCaseBase):
         node = ET.fromstring(
             """
             <lx_question max_attempts="5" weight="2" display_name="Q1">
-              <stringresponse answer="correct one">
+              <stringresponse answer="correct on\u00e9">
                 <label>&lt;p&gt;lorem &lt;strong&gt;ipsum&lt;/strong&gt;&lt;/p&gt;</label>
                 <correcthint>this is the better correct</correcthint>
                 <additional_answer answer="correct two">
@@ -289,9 +442,9 @@ class QuestionBlockTestCase(BlockTestCaseBase):
         expected_question_data = {
             "type": "stringresponse",
             "question": "<p>lorem <strong>ipsum</strong></p>",
-            "answers": ["correct one", "correct two"],
+            "answers": ["correct on\u00e9", "correct two"],
             "comments": {
-                "correct one": "this is the better correct",
+                "correct on\u00e9": "this is the better correct",
                 "also wrong!": ":P",
                 "correct two": "also correct!",
             },
@@ -312,7 +465,7 @@ class QuestionBlockTestCase(BlockTestCaseBase):
         field_data = {
             'data': """
                 <problem max_attempts="5" weight="2" display_name="Q1">
-                  <stringresponse answer="correct one">
+                  <stringresponse answer="correct on\u00e9">
                     <label>&lt;p&gt;lorem &lt;strong&gt;ipsum&lt;/strong&gt;&lt;/p&gt;</label>
                     <correcthint>this is the better correct</correcthint>
                     <additional_answer answer="correct two">
