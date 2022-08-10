@@ -250,7 +250,7 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
             }
 
         elif t == "optionresponse":
-            answer_index = self.student_answer.get("index", -1)
+            answer_index = self._answer_index(not_found=-1)
             options = self.question_data["options"]
             return {
                 "type": t,
@@ -267,6 +267,39 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
                 "studentAnswer": self.student_answer,
             }
 
+    def _answer_index(self, student_answer=None, not_found=None) -> int:
+        """
+        Returns the integer index of the student's chosen answer.
+        Returns -1 if no answer has been chosen yet, or if a previously chosen answer has been removed from the options.
+
+        For optionresponse problems only.
+
+        This method is used to convert xblock data stored by Open edX CAPA problems to the format used by this XBlock.
+
+        If "student_answer" provided, then uses this provided dict instead of self.student_answer
+        """
+        t = self._question_data["type"]
+        assert t == "optionresponse"
+
+        if not student_answer:
+            student_answer = self.student_answer
+
+        options = self.question_data["options"]
+
+        answer_index = student_answer.get("index")
+        if answer_index is None and "response" in self.student_answer:
+            # If no index was provided, but the actual response was (i.e. from Open edX),
+            # locate the response among the available options.
+            response = html.unescape(student_answer.pop("response").strip())
+            for i, option in enumerate(options):
+                if option.get("content") == response:
+                    answer_index = i
+                    student_answer["index"] = answer_index
+                    break
+        if answer_index is None:
+            return not_found
+        return answer_index
+
     def _is_correct(self) -> Optional[bool]:
         """
         Return:
@@ -279,7 +312,7 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
 
         t = self._question_data["type"]
         if t == "optionresponse":
-            index = self.student_answer["index"]
+            index = self._answer_index(not_found=-1)
             # this could happen if student submits answer, then options are removed later
             if index >= len(self.question_data["options"]):
                 return False
@@ -355,7 +388,7 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
 
         t = self._question_data["type"]
         if t == "optionresponse":
-            index = data.get("index")
+            index = self._answer_index(student_answer=data)
             n_options = len(self.question_data["options"])
             if index is None:
                 raise JsonHandlerError(400, "`index` field missing")
