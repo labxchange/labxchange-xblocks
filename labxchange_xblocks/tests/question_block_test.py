@@ -458,6 +458,94 @@ class QuestionBlockTestCase(BlockTestCaseBase):
             {"content": "global hint 2"},
         ]
 
+    def test_parse_from_xml_unencoded(self):
+        """
+        Test transforming unencoded HTML+xml into a block
+        """
+        node = ET.fromstring(
+            """
+            <lx_question max_attempts="5" weight="2" display_name="Q1">
+              <stringresponse answer="correct on\u00e9">
+                <label><p>l\u00d2rem <strong>ipsum</strong></p></label>
+                <correcthint>this is the better correct</correcthint>
+                <additional_answer answer="correct two">
+                    <correcthint>also correct!</correcthint>
+                </additional_answer>
+                <stringequalhint answer="wrong"/>
+                <stringequalhint answer="also wrong!">:P</stringequalhint>
+                <textline size="20"/>
+              </stringresponse>
+              <demandhint>
+                <hint>global hint 1</hint>
+                <hint>global hint 2</hint>
+              </demandhint>
+          </lx_question>
+        """
+        )
+        block = QuestionBlock.parse_xml(node, self.runtime_mock, self.keys)
+        expected_question_data = {
+            "type": "stringresponse",
+            "question": "<p>l\u00d2rem <strong>ipsum</strong></p>",
+            "answers": ["correct on\u00e9", "correct two"],
+            "comments": {
+                "correct on\u00e9": "this is the better correct",
+                "also wrong!": ":P",
+                "correct two": "also correct!",
+            },
+        }
+        assert block.question_data == expected_question_data
+        assert block.max_attempts == 5
+        assert block.weight == 2
+        assert block.display_name == "Q1"
+        assert block.hints == [
+            {"content": "global hint 1"},
+            {"content": "global hint 2"},
+        ]
+
+    def test_parse_from_xml_plain_text(self):
+        """
+        Test transforming unencoded text+HTML+xml into a block
+        """
+        node = ET.fromstring(
+            """
+            <lx_question max_attempts="5" weight="2" display_name="Q1">
+              <stringresponse answer="correct on\u00e9">
+                <label>l\u00d2rem <strong>ipsum</strong></label>
+                <correcthint>this is the better correct</correcthint>
+                <additional_answer answer="correct two">
+                    <correcthint>also correct!</correcthint>
+                </additional_answer>
+                <stringequalhint answer="wrong"/>
+                <stringequalhint answer="also wrong!">:P</stringequalhint>
+                <textline size="20"/>
+              </stringresponse>
+              <demandhint>
+                <hint>global hint 1</hint>
+                <hint>global hint 2</hint>
+              </demandhint>
+          </lx_question>
+        """
+        )
+        block = QuestionBlock.parse_xml(node, self.runtime_mock, self.keys)
+        expected_question_data = {
+            "type": "stringresponse",
+            "question": "l\u00d2rem <strong>ipsum</strong>",
+            "answers": ["correct on\u00e9", "correct two"],
+            "comments": {
+                "correct on\u00e9": "this is the better correct",
+                "also wrong!": ":P",
+                "correct two": "also correct!",
+            },
+        }
+        assert block.question_data == expected_question_data
+        assert block.max_attempts == 5
+        assert block.weight == 2
+        assert block.display_name == "Q1"
+        assert block.hints == [
+            {"content": "global hint 1"},
+            {"content": "global hint 2"},
+        ]
+
     def test_lazy_parse_from_xml(self):
         """
         Test the lazy xml parsing that occurs when a QuestionBlock is loaded from a cached ProblemBlock's field data.

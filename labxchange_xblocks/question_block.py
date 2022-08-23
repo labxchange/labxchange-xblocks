@@ -6,6 +6,7 @@ import html
 import json
 import logging
 from typing import List, Optional
+from xml.etree.ElementTree import tostring
 
 from lxml import etree
 from webob import Response
@@ -483,9 +484,9 @@ def parse_stringresponse_from_node(node: "xmlnode") -> dict:
     # pylint: disable=too-many-nested-blocks
     for child in iter_without_comments(node):
         if child.tag == "label":
-            question = html.unescape(child.text.strip())
+            question = html.unescape(decode_text(child, inner_html=True))
         elif child.tag == "correcthint":
-            text = child.text.strip() if child.text else ""
+            text = decode_text(child)
             if main_answer and text:
                 comments[main_answer] = text
         elif child.tag == "additional_answer":
@@ -494,12 +495,12 @@ def parse_stringresponse_from_node(node: "xmlnode") -> dict:
                 answers.append(answer)
                 for grandchild in iter_without_comments(child):
                     if grandchild.tag == "correcthint":
-                        text = grandchild.text.strip() if grandchild.text else ""
+                        text = decode_text(grandchild)
                         if text:
                             comments[answer] = text
         elif child.tag == "stringequalhint":
             answer = child.attrib.get("answer")
-            text = child.text.strip() if child.text else ""
+            text = decode_text(child)
             if answer and text:
                 comments[answer] = text
 
@@ -526,7 +527,7 @@ def parse_choiceresponse_from_node(node: "xmlnode") -> dict:
 
     for child in iter_without_comments(node):
         if child.tag == "label":
-            question = html.unescape(child.text.strip())
+            question = html.unescape(decode_text(child, inner_html=True))
         elif child.tag == "checkboxgroup":
             for grandchild in iter_without_comments(child):
                 if grandchild.tag == "choice":
@@ -538,7 +539,7 @@ def parse_choiceresponse_from_node(node: "xmlnode") -> dict:
                             sorted(grandchild.attrib.get("value", "").upper().split()),
                         )
                     )
-                    comments[key] = grandchild.text.strip()
+                    comments[key] = decode_text(grandchild)
 
     return {
         "type": node.tag,
@@ -565,12 +566,12 @@ def parse_choice_from_node(node: "xmlnode") -> dict:
     for child in iter_without_comments(node):
         if child.tag == "choicehint":
             if child.attrib.get("selected", "false") == "true":
-                selected_comment = child.text.strip()
+                selected_comment = decode_text(child)
             else:
-                unselected_comment = child.text.strip()
+                unselected_comment = decode_text(child)
 
     choice = {
-        "content": html.unescape(node.text.strip()),
+        "content": html.unescape(decode_text(node)),
         "correct": node.attrib.get("correct", "false") == "true",
         "selected_comment": selected_comment,
         "unselected_comment": unselected_comment,
@@ -591,14 +592,14 @@ def parse_option_from_node(node: "xmlnode") -> dict:
       }
     """
     option = {
-        "content": html.unescape(node.text.strip()),
+        "content": html.unescape(decode_text(node)),
         "correct": node.attrib.get("correct", "false") == "true",
         "comment": "",
     }
 
     for child in iter_without_comments(node):
         if child.tag in ["choicehint", "optionhint"]:
-            option["comment"] = child.text.strip()
+            option["comment"] = decode_text(child)
 
     return option
 
@@ -625,7 +626,7 @@ def parse_optionresponse_from_node(node: "xmlnode") -> dict:
 
     for child in iter_without_comments(node):
         if child.tag == "label":
-            question = html.unescape(child.text.strip())
+            question = html.unescape(decode_text(child, inner_html=True))
         elif child.tag in ("optioninput", "choicegroup"):
             for grandchild in iter_without_comments(child):
                 if grandchild.tag in ("choice", "option"):
@@ -654,7 +655,7 @@ def parse_hints_from_node(node: "xmlnode") -> List[dict]:
         [{ "content": "this is another hint" }]
     """
     return [
-        {"content": child.text.strip()}
+        {"content": decode_text(child)}
         for child in iter_without_comments(node)
         if child.tag == "hint"
     ]
@@ -664,3 +665,19 @@ def iter_without_comments(node):
     for child in node:
         if child.tag is not etree.Comment:
             yield child
+
+
+def decode_text(node, inner_html=False):
+    """
+    Returns the stripped inner text/html of the given node, or empty string, if none.
+
+    If `inner_html` requested, then the returned text will include the child tags and text too.
+    """
+    if inner_html:
+        text = node.text or ""
+        for child in node:
+            text = text + tostring(child, encoding="unicode")
+            text = text + (child.tail or "")
+    else:
+        text = node.text or ""
+    return text.strip()
