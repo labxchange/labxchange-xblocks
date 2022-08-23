@@ -6,9 +6,9 @@ import html
 import json
 import logging
 from typing import List, Optional
+from xml.etree.ElementTree import tostring
 
 from lxml import etree
-from lxml.html import tostring
 from webob import Response
 from xblock import fields
 from xblock.core import XBlock
@@ -484,7 +484,7 @@ def parse_stringresponse_from_node(node: "xmlnode") -> dict:
     # pylint: disable=too-many-nested-blocks
     for child in iter_without_comments(node):
         if child.tag == "label":
-            question = html.unescape(decode_text(child))
+            question = html.unescape(decode_text(child, inner_html=True))
         elif child.tag == "correcthint":
             text = decode_text(child)
             if main_answer and text:
@@ -527,7 +527,7 @@ def parse_choiceresponse_from_node(node: "xmlnode") -> dict:
 
     for child in iter_without_comments(node):
         if child.tag == "label":
-            question = html.unescape(decode_text(child))
+            question = html.unescape(decode_text(child, inner_html=True))
         elif child.tag == "checkboxgroup":
             for grandchild in iter_without_comments(child):
                 if grandchild.tag == "choice":
@@ -626,7 +626,7 @@ def parse_optionresponse_from_node(node: "xmlnode") -> dict:
 
     for child in iter_without_comments(node):
         if child.tag == "label":
-            question = html.unescape(decode_text(child))
+            question = html.unescape(decode_text(child, inner_html=True))
         elif child.tag in ("optioninput", "choicegroup"):
             for grandchild in iter_without_comments(child):
                 if grandchild.tag in ("choice", "option"):
@@ -667,9 +667,17 @@ def iter_without_comments(node):
             yield child
 
 
-def decode_text(node):
+def decode_text(node, inner_html=False):
     """
     Returns the stripped inner text/html of the given node, or empty string, if none.
+
+    If `inner_html` requested, then the returned text will include the child tags and text too.
     """
-    text = tostring(node) or ""
-    return text.decode("utf-8").strip()
+    if inner_html:
+        text = node.text or ""
+        for child in node:
+            text = text + tostring(child, encoding="unicode")
+            text = text + (child.tail or "")
+    else:
+        text = node.text or ""
+    return text.strip()
