@@ -58,7 +58,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
         )
         block.children.append(image_block.scope_ids.block_type)
 
-        def get_block(usage_id, block_type_overrides):
+        def get_block(usage_id, block_type_overrides, use_original):
             if usage_id == "lx_document":
                 return document_block
             if usage_id == "lx_image":
@@ -75,12 +75,12 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
                     {
                         "block_type": "lx_document",
                         "display_name": "CS Document",
-                        "usage_id": "lx_document",
+                        "usage_id": "usage_id_document",
                     },
                     {
                         "block_type": "lx_image",
                         "display_name": "CS Image",
-                        "usage_id": "lx_image",
+                        "usage_id": "usage_id_image",
                     },
                 ],
                 "display_name": "Case Study 1",
@@ -119,8 +119,8 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
                     "title": "Section One",
                     "children": [
                         {"inlinehtml": "<span>hello</span>"},
-                        {"usage_id": "lx_image", "embed": True},
-                        {"usage_id": "lx_image", "embed": True},  # dups are ok here
+                        {"usage_id": "usage_id_image", "embed": True},
+                        {"usage_id": "usage_id_image", "embed": True},  # dups are ok here
                     ],
                 },
                 {"title": "Section Two", "children": [{"inlinehtml": ""}, ], },
@@ -147,7 +147,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
                     "title": "Section One",
                     "children": [
                         {"inlinehtml": "<span>hello</span>"},
-                        {"usage_id": "lx_image", "embed": True},
+                        {"usage_id": "usage_id_image", "embed": True},
                     ],
                 },
                 {
@@ -214,7 +214,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
         block.sections = sections
         block.attachments = attachments
 
-        def get_block(usage_id, block_type_overrides):
+        def get_block(usage_id, block_type_overrides, use_original):
             if usage_id == "lx_document":
                 return document_block
             if usage_id == "lx_image":
@@ -231,12 +231,12 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
                     {
                         "block_type": "lx_document",
                         "display_name": "CS Document",
-                        "usage_id": "lx_document",
+                        "usage_id": "usage_id_document",
                     },
                     {
                         "block_type": "lx_image",
                         "display_name": "CS Image",
-                        "usage_id": "lx_image",
+                        "usage_id": "usage_id_image",
                     },
                 ],
                 "display_name": "Case Study 3",
@@ -284,7 +284,7 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
             block.attachments = "foo"
         block.attachments = ["lx_image"]
 
-        def get_block(usage_id, block_type_overrides):
+        def get_block(usage_id, block_type_overrides, use_original):
             if usage_id == "lx_document":
                 return document_block
             if usage_id == "lx_image":
@@ -301,12 +301,12 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
                     {
                         "block_type": "lx_document",
                         "display_name": "CS Document",
-                        "usage_id": "lx_document",
+                        "usage_id": "usage_id_document",
                     },
                     {
                         "block_type": "lx_image",
                         "display_name": "CS Image",
-                        "usage_id": "lx_image",
+                        "usage_id": "usage_id_image",
                     },
                 ],
                 "display_name": "Case Study 4",
