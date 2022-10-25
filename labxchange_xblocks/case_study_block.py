@@ -88,17 +88,22 @@ For example: [
         """
         Return content and settings for student view.
         """
-        valid_child_block_ids = set()
+        valid_child_block_ids = {}  # child_usage_id => original usage_id
         child_blocks = []
         context = context or {}
 
         block_type_overrides = context.get('block_type_overrides')
         for child_usage_id in self.children:  # pylint: disable=no-member
-            child_block = self.runtime.get_block(child_usage_id, block_type_overrides=block_type_overrides)
+            child_block = self.runtime.get_block(
+                child_usage_id,
+                block_type_overrides=block_type_overrides,
+                use_original=True,
+            )
             if child_block:
-                valid_child_block_ids.add(str(child_usage_id))
+                # Store the original usage_id against the valid child usage_id
+                valid_child_block_ids[str(child_usage_id)] = child_block.scope_ids.usage_id
                 child_block_data = {
-                    "usage_id": str(child_usage_id),
+                    "usage_id": str(child_block.scope_ids.usage_id),
                     "block_type": child_block.scope_ids.block_type,
                     "display_name": child_block.display_name,
                 }
@@ -115,12 +120,13 @@ For example: [
                         "inlinehtml": child["inlinehtml"]
                     })
                 elif child.get("usage_id"):
-                    # if we're embedding, it needs to be a valid xblock
+                    # If we're embedding, it needs to be a valid xblock
+                    # If we're not embedding, still include it: it might be a pathway or some other non-xblock asset.
                     if child.get("embed", True) and not child["usage_id"] in valid_child_block_ids:
                         continue
 
                     children.append({
-                        "usage_id": child["usage_id"],
+                        "usage_id": str(valid_child_block_ids.get(child["usage_id"], child["usage_id"])),
                         "embed": child.get("embed", True),
                     })
 
