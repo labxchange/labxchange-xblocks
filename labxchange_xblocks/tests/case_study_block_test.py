@@ -157,28 +157,28 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
             ],
             [],
         ),
-        ([], ["lx_image"], [], ["lx_image"],),
-        ([], ["lx_document", "lx_image"], [], ["lx_document", "lx_image"],),
+        ([], ["lx_image"], [], ["usage_id_image"],),
+        ([], ["lx_document", "lx_image"], [], ["usage_id_document", "usage_id_image"],),
         # invalid/notfound attachments are kept because they may be non-xblock attachments
         # (eg. a labxchange native asset)
         (
             [],
             ["lx_document", "does_not_exist", "lx_image"],
             [],
-            ["lx_document", "does_not_exist", "lx_image"],
+            ["usage_id_document", "does_not_exist", "usage_id_image"],
         ),
         (
             [],
             ["lx_document", {"key": "invalid type"}, "lx_image"],
             [],
-            ["lx_document", "lx_image"],
+            ["usage_id_document", "usage_id_image"],
         ),
         (
             [],
             # duplicates are ok in attachments
             ["lx_document", "lx_document", "lx_image"],
             [],
-            ["lx_document", "lx_document", "lx_image"],
+            ["usage_id_document", "usage_id_document", "usage_id_image"],
         ),
     )
     @ddt.unpack
@@ -311,6 +311,6 @@ class CaseStudyBlockTestCase(XmlTest, BlockTestCaseBase):
                 ],
                 "display_name": "Case Study 4",
                 "sections": [],
-                "attachments": ["lx_image"],
+                "attachments": ["usage_id_image"],
             },
         )
