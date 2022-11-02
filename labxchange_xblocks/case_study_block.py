@@ -138,7 +138,7 @@ For example: [
         attachments = []
         for xblock_id in self.attachments:
             if isinstance(xblock_id, str):
-                attachments.append(xblock_id)
+                attachments.append(str(valid_child_block_ids.get(xblock_id, xblock_id)))
 
         return {
             "display_name": self.display_name,
