@@ -226,7 +226,6 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
 
             # global comment based on correctness
             comment = ""
-            print("!!!", correct, self.question_data["comments"])
             if has_answer:
                 group_key = "correct" if correct else "incorrect"
                 comment = self.question_data["comments"].get(group_key, "")
@@ -539,7 +538,6 @@ def parse_choiceresponse_from_node(node: "xmlnode") -> dict:
                     choices.append(parse_choice_from_node(grandchild))
                 elif grandchild.tag == "compoundhint":
                     value = grandchild.attrib.get("correct", "").lower()
-                    print("???", value, comments)
                     if value in ("true", "false"):
                         key = "correct" if value == "true" else "incorrect"
                         comments[key] = decode_text(grandchild)
