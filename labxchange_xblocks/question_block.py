@@ -563,7 +563,7 @@ def parse_choice_from_node(node: "xmlnode") -> dict:
       }
     """
     selected_comment = ""
-    unselected_comment = ""
+    # unselected_comment = ""
     for child in iter_without_comments(node):
         if child.tag == "choicehint":
             if child.attrib.get("selected", "false") == "true":
@@ -575,7 +575,9 @@ def parse_choice_from_node(node: "xmlnode") -> dict:
         "content": html.unescape(decode_text(node)),
         "correct": node.attrib.get("correct", "false") == "true",
         "selected_comment": selected_comment,
-        "unselected_comment": unselected_comment,
+        # Disable unselected comment
+        # https://app.asana.com/0/1202822149778018/1203232161649928/f
+        "unselected_comment": "",
     }
 
     return choice
