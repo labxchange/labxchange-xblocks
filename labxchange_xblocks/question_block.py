@@ -47,7 +47,7 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
         help=_("XML data for the problem"),
         scope=Scope.content,
         enforce_type=True,
-        default="<lx_question></lx_question>"
+        default="<lx_question></lx_question>",
     )
 
     max_attempts = fields.Integer(
@@ -164,11 +164,15 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
         """
         if not self.question_data:
             # If no question data has been parsed yet, then parse it.
-            log.debug(f'QuestionBlock: re-parsing XML data for block {self.scope_ids.usage_id}')
+            log.debug(
+                f"QuestionBlock: re-parsing XML data for block {self.scope_ids.usage_id}"
+            )
             try:
                 node = etree.XML(self.data)
             except etree.XMLSyntaxError:
-                log.error(f'Error parsing problem types from xml for question block {self.scope_ids.usage_id}')
+                log.error(
+                    f"Error parsing problem types from xml for question block {self.scope_ids.usage_id}"
+                )
                 return None
             self._parse_xml(node)
             # Unmark the modified fields as "dirty" -- nothing has actually changed.
@@ -190,7 +194,7 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
         earned = possible if correct else 0
         return Score(raw_earned=earned, raw_possible=possible)
 
-    def _student_view_question_data(self) -> dict:
+    def _student_view_question_data(self, correct: bool) -> dict:
         """
         Return a copy of the question data,
         with all sensitive non-student facing information stripped.
@@ -220,10 +224,10 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
             selected = self.student_answer.get("selected")
             has_answer = selected is not None
 
-            # global comment based on combination of selected
+            # global comment based on correctness
             comment = ""
             if has_answer:
-                group_key = " ".join(map(str, sorted(selected)))
+                group_key = "correct" if correct else "incorrect"
                 comment = self.question_data["comments"].get(group_key, "")
 
             return {
@@ -331,8 +335,8 @@ class QuestionBlock(XBlock, StudentViewBlockMixin):
             return True
 
     def _student_view_user_state_data(self):
-        question_data = self._student_view_question_data()
         correct = self._is_correct()
+        question_data = self._student_view_question_data(correct=correct)
         weight = self.weight if self.weight > 0 else 1
         return {
             "maxAttempts": self.max_attempts,
@@ -533,13 +537,10 @@ def parse_choiceresponse_from_node(node: "xmlnode") -> dict:
                 if grandchild.tag == "choice":
                     choices.append(parse_choice_from_node(grandchild))
                 elif grandchild.tag == "compoundhint":
-                    key = " ".join(
-                        map(
-                            lambda x: str(ord(x) - 65),
-                            sorted(grandchild.attrib.get("value", "").upper().split()),
-                        )
-                    )
-                    comments[key] = decode_text(grandchild)
+                    value = grandchild.attrib.get("correct", "").lower()
+                    if value in ("true", "false"):
+                        key = "correct" if value == "true" else "incorrect"
+                        comments[key] = decode_text(grandchild)
 
     return {
         "type": node.tag,
@@ -562,7 +563,7 @@ def parse_choice_from_node(node: "xmlnode") -> dict:
       }
     """
     selected_comment = ""
-    unselected_comment = ""
+    # unselected_comment = ""
     for child in iter_without_comments(node):
         if child.tag == "choicehint":
             if child.attrib.get("selected", "false") == "true":
@@ -574,7 +575,9 @@ def parse_choice_from_node(node: "xmlnode") -> dict:
         "content": html.unescape(decode_text(node)),
         "correct": node.attrib.get("correct", "false") == "true",
         "selected_comment": selected_comment,
-        "unselected_comment": unselected_comment,
+        # Disable unselected comment
+        # https://app.asana.com/0/1202822149778018/1203232161649928/f
+        "unselected_comment": "",
     }
 
     return choice
